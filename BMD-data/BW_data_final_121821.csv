@@ -1,0 +1,272 @@
+Index,Species,Strain,Sex,Effect.Sex,Dose.Converted,bw.a,Sex.result
+1,Rat,Sprague-Dawley,M/F,Both,Dose,0.431,Both
+2,Mouse,C3H,F,Both,Dose,0.0353,F
+3,Rat,Porton,M/F,F,Conv,0.284,F
+4,Mouse,BALB/C,M/F,M,Dose,0.0373,M
+5,Mouse,CF-1,M/F,M,Dose,0.0373,M
+6,Mouse,CF-1,M/F,F,Dose,0.0353,F
+7,Mouse,CF-1,M/F,M,Dose,0.0373,M
+8,Mouse,CF-1,M/F,F,Dose,0.0353,F
+9,Mouse,CFW,M/F,Both,Dose,0.0363,Both
+10,Rat,Sprague-Dawley,M/F,Both,Dose,0.431,Both
+11,Mouse,Swiss,Unspecified,Both,Dose,0.0363,Both
+12,Rat,Fischer 344,M/F,M,Dose,0.38,M
+13,Mouse,NMRI,M/F,M,Dose,0.0373,M
+14,Rat,Sprague-Dawley,M/F,M,Dose,0.523,M
+15,Rat,Sprague-Dawley,M/F,F,Dose,0.338,F
+16,Rat,Fischer 344,M,Both,Conv,0.38,M
+17,Rat,Colworth,M/F,M,Dose,0.452,M
+18,Rat,CD,M/F,M,HEq,0.452,M
+19,Rat,CD,M/F,F,HEq,0.284,F
+20,Rat,CD,M/F,M,Conv,0.452,M
+21,Mouse,C3H,F,Both,Dose,0.0353,F
+22,Hamster,Golden Syrian,M/F,F,Dose,0.145,F
+23,Rat,Wistar,M/F,F,Dose,0.297,F
+24,Rat,Sprague-Dawley,M/F,M,Dose,0.523,M
+25,Rat,CD,M/F,M,HEq,0.452,M
+26,Rat,CD,M/F,M,HEq,0.452,M
+27,Rat,Fischer 344,M/F,M,Dose,0.38,M
+28,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+29,Rat,Fischer 344,M/F,M,Dose,0.38,M
+30,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+31,Rat,Colworth,M/F,F,Dose,0.284,F
+32,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+33,Rat,Fischer 344,M/F,M,Dose,0.38,M
+34,Rat,Wistar,M,Both,Dose,0.462,M
+35,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+36,Hamster,Golden Syrian,M/F,M,HEq,0.134,M
+37,Hamster,Golden Syrian,M/F,F,HEq,0.145,F
+38,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+39,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+40,Hamster,Golden Syrian,M/F,M,HEq,0.134,M
+41,Hamster,Golden Syrian,M/F,F,HEq,0.145,F
+42,Rat,Wistar,F,Both,HEq,0.297,F
+43,Rat,Fischer 344,M/F,F,HEq,0.229,F
+44,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+45,Rat,Osborne-Mendel,F,Both,Dose,0.389,F
+46,Rat,Sprague-Dawley,F,Both,HEq,0.338,F
+47,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+48,Mouse,B6C3F1,M,Both,HEq,0.0373,M
+49,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+50,Mouse,B6C3F1,,F,HEq,0.0353,F
+51,Rat,Fischer 344,M/F,M,HEq,0.38,M
+52,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+53,Mouse,B6C3F1,M/F,Both,HEq,0.0363,Both
+54,Rat,Fischer 344,M/F,F,HEq,0.229,F
+55,Rat,Fischer 344,M/F,F,HEq,0.229,F
+56,Rat,Fischer 344,M/F,F,HEq,0.229,F
+57,Rat,Fischer 344,M/F,F,HEq,0.229,F
+58,Rat,Fischer 344,M/F,F,HEq,0.229,F
+59,Rat,Fischer 344,M/F,F,HEq,0.229,F
+60,Rat,Fischer 344,M/F,M,Dose,0.38,M
+61,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+62,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+63,Mouse,B6C3F1,M,M,HEq,0.0373,M
+64,Rat,Fischer 344,M/F,M,Dose,0.38,M
+65,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+66,Rat,Fischer 344,M/F,M,Conv,0.38,M
+67,Rat,Fischer 344,M/F,M,Conv,0.38,M
+68,Rat,Fischer 344,M/F,F,Conv,0.229,F
+69,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+70,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+71,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+72,Rat,CD,M/F,F,Conv,0.284,F
+73,Rat,Sprague-Dawley,M/F,M,HEq,0.523,M
+74,Rat,Fischer 344,M/F,F,Dose,0.229,F
+75,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+76,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+77,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+78,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+79,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+80,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+81,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+82,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+83,Rat,Fischer 344,M/F,M,HEq,0.38,M
+84,Rat,Fischer 344,M/F,M,Conv,0.38,M
+85,Mouse,BDF1,M/F,F,Dose,0.0353,F
+86,Rat,Fischer 344,M/F,M,Dose,0.38,M
+87,Rat,Fischer 344,M/F,F,Dose,0.229,F
+88,Rat,Sprague-Dawley,M,Both,Conv,0.523,M
+89,Non-human primate,Rhesus Monkey,M/F,F,Dose,8,F
+90,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+91,Rat,Osborne-Mendel,M/F,F,Dose,0.389,F
+92,Mouse,CD-1,M/F,F,HEq,0.0353,F
+93,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+94,Mouse,CD-1,M/F,M,Conv,0.0373,M
+95,Mouse,Unspecified,M/F,F,HEq,0.0353,F
+96,Rat,Fischer 344,M/F,F,Dose,0.229,F
+97,Rat,Fischer 344,M/F,M,Conv,0.38,M
+98,Rat,Fischer 344,M/F,M,Dose,0.38,M
+99,Rat,CD,M/F,M,Dose,0.452,M
+100,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+101,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+102,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+103,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+104,Rat,CD,M/F,Both,Conv,0.368,Both
+105,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+106,Rat,Fischer 344,M/F,F,Conv,0.229,F
+107,Mouse,CD-1,M/F,M,Dose,0.0373,M
+108,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+109,Rat,Fischer 344,M/F,F,HEq,0.229,F
+110,Rat,Fischer 344,M/F,F,HEq,0.229,F
+111,Rat,Fischer 344,M/F,F,HEq,0.229,F
+112,Rat,Fischer 344,M/F,F,HEq,0.229,F
+113,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+114,Rat,Fischer 344,M/F,M,Dose,0.38,M
+115,Rat,Fischer 344,M/F,M,Dose,0.38,M
+116,Rat,Fischer 344,M/F,M,Dose,0.38,M
+117,Mouse,B6C3F1,F,Both,HEq,0.0353,F
+118,Rat,Fischer 344,M/F,F,HEq,0.229,F
+119,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+120,Rat,Fischer 344,M/F,M,Conv,0.38,M
+121,Mouse,CD-1,M/F,M,Conv,0.0373,M
+122,Rat,Wistar,M,Both,Conv,0.462,M
+123,Rat,Wistar,M,M,HEq,0.462,M
+124,Rat,Osborne-Mendel,M/F,M,Dose,0.514,M
+125,Rat,Osborne-Mendel,M,M,HEq,0.514,M
+126,Rat,Osborne-Mendel,M,Both,HEq,0.514,M
+127,Rat,Osborne-Mendel,M,Both,HEq,0.514,M
+128,Rat,Osborne-Mendel,M/F,M,Dose,0.514,M
+129,Rat,Osborne-Mendel,M,Both,HEq,0.514,M
+130,Rat,Sprague-Dawley,M,Both,HEq,0.523,M
+131,Rat,Fischer 344,M,Both,HEq,0.38,M
+132,Rat,Sprague-Dawley,M,Both,HEq,0.523,M
+133,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+134,Rat,Fischer 344,M/F,M,Dose,0.38,M
+135,Rat,Fischer 344,M/F,M,HEq,0.38,M
+136,Rat,Fischer 344,M/F,M,Dose,0.38,M
+137,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+138,Rat,Sprague-Dawley,M/F,F,Dose,0.338,F
+139,Hamster,Golden Syrian,M/F,M,Conv,0.134,M
+140,Rat,Sprague-Dawley,M/F,F,Dose,0.338,F
+141,Rat,Sprague-Dawley,M/F,F,HEq,0.338,F
+142,Rat,Fischer 344,M/F,F,HEq,0.229,F
+143,Rat,Fischer 344,M/F,F,Dose,0.229,F
+144,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+145,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+146,Rat,CD,M/F,F,Conv,0.284,F
+147,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+148,Rat,Fischer 344,M/F,M,HEq,0.38,M
+149,Rat,Fischer 344,M/F,F,Dose,0.229,F
+150,Rat,Fischer 344,M,Both,HEq,0.38,M
+151,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+152,Mouse,BDF1,F,F,Dose,0.0353,F
+153,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+154,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+155,Rat,Fischer 344,M/F,M,Dose,0.38,M
+156,Rat,Sprague-Dawley,M/F,M,HEq,0.523,M
+157,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+158,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+159,Rat,Fischer 344,M,Both,Dose,0.38,M
+160,Mouse,CD-1,M/F,M,HEq,0.0373,M
+161,Mouse,CD-1,M/F,F,HEq,0.0353,F
+162,Rat,Fischer 344,M/F,F,Dose,0.229,F
+163,Rat,Fischer 344,M/F,F,Dose,0.229,F
+164,Rat,Albino,M/F,Both,Dose,0.368,Both
+165,Rat,Wistar,M/F,Both,Dose,0.38,Both
+166,Rat,CF-N,M/F,Both,Dose,0.368,Both
+167,Rat,,M/F,Both,HEq,0.368,Both
+168,Rat,Fischer 344,M/F,M,Conv,0.38,M
+169,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+170,Rat,Fischer 344,M/F,M,Dose,0.38,M
+171,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+172,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+173,Mouse,B6C3F1,M/F,M,Conv,0.0373,M
+174,Rat,Fischer 344,M/F,M,Dose,0.38,M
+175,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+176,Mouse,C3H,M/F,M,HEq,0.0373,M
+177,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+178,Mouse,,M,Both,HEq,0.0373,M
+179,Rat,Fischer 344,M/F,M,Dose,0.38,M
+180,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+181,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+182,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+183,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+184,Mouse,B6C3F1,M/F,Both,Conv,0.0363,Both
+185,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+186,Rat,Fischer 344,M/F,M,HEq,0.38,M
+187,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+188,Rat,Fischer 344,M/F,M,HEq,0.38,M
+189,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+190,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+191,Rat,Fischer 344,M/F,F,Dose,0.229,F
+192,Rat,Fischer 344,M/F,F,Dose,0.229,F
+193,Rat,BD,Unspecified,Both,Dose,0.368,Both
+194,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+195,Mouse,CD-1,M/F,M,Conv,0.0373,M
+196,Rat,Fischer 344,M/F,M,Conv,0.38,M
+197,Rat,Sprague-Dawley,M/F,Both,HEq,0.431,Both
+198,Rat,Sprague-Dawley,M/F,Both,HEq,0.431,Both
+199,Mouse,CD-1,M/F,M,HEq,0.0373,M
+200,Mouse,CD-1,M/F,F,HEq,0.0353,F
+201,Mouse,CD-1,M/F,M,HEq,0.0373,M
+202,Mouse,CD-1,M/F,F,HEq,0.0353,F
+203,Rat,Fischer 344,M/F,F,HEq,0.229,F
+204,Rat,Fischer 344,M/F,F,HEq,0.229,F
+205,Rat,CD,M/F,M,Dose,0.452,M
+206,Rat,Fischer 344,M/F,M,HEq,0.38,M
+207,Rat,Sprague-Dawley,F,F,HEq,0.338,F
+208,Rat,Sprague-Dawley,F,F,HEq,0.338,F
+209,Rat,Sprague-Dawley,F,F,HEq,0.338,F
+210,Rat,Fischer 344,M/F,M,HEq,0.38,M
+211,Rat,Sprague-Dawley,M/F,F,Dose,0.338,F
+212,Rat,Sprague-Dawley,M/F,M,Dose,0.523,M
+213,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+214,Mouse,B6C3F1,M/F,M,Dose,0.0373,M
+215,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+216,Rat,Osborne-Mendel,M/F,M,Dose,0.514,M
+217,Rat,Fischer 344,M/F,M,Dose,0.38,M
+218,Rat,Fischer 344,M/F,M,Dose,0.38,M
+219,Rat,Fischer 344,M/F,M,Dose,0.38,M
+220,Rat,Fischer 344,M/F,M,Dose,0.38,M
+221,Rat,Fischer 344,M/F,M,Dose,0.38,M
+222,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
+223,Mouse,B6C3F1,M/F,F,Conv,0.0353,F
+224,Mouse,B6C3F1,M/F,Both,Conv,0.0363,Both
+225,Rat,CFE,M/F,F,Dose,0.284,F
+226,Mouse,ICR,F,Both,Conv,0.0353,F
+227,Rat,Fischer 344,M/F,M,Dose,0.38,M
+228,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+229,Rat,ACI/N,M,Both,Dose,0.452,M
+230,Rat,Donryu,M,Both,Dose,0.452,M
+231,Rat,Wistar,M,M,Dose,0.462,M
+232,Rat,Wistar,M,Both,Dose,0.462,M
+233,Mouse,CD-1,M/F,M,HEq,0.0373,M
+234,Mouse,CD-1,M/F,F,HEq,0.0353,F
+235,Mouse,ICR,M/F,M,HEq,0.0373,M
+236,Mouse,B6C3F1,M/F,M,HEq,0.0373,M
+237,Mouse,B6C3F1,M/F,F,HEq,0.0353,F
+238,Rat,Fischer 344,,M,Dose,0.38,M
+239,Rat,Fischer 344,,Both,Dose,0.3045,Both
+240,Rat,Fischer 344,M/F,M,Dose,0.38,M
+241,Mouse,CD-1,M/F,F,HEq,0.0353,F
+242,Rat,Fischer 344,M/F,F,HEq,0.229,F
+243,Rat,Donryu,F,Both,Dose,0.284,F
+244,Rat,Donryu,F,Both,Dose,0.284,F
+245,Rat,Donryu,F,Both,Dose,0.284,F
+246,Rat,Donryu,F,Both,Dose,0.284,F
+247,Rat,Donryu,F,Both,Dose,0.284,F
+248,Rat,Donryu,F,Both,Dose,0.284,F
+249,Rat,Sprague-Dawley,M/F,F,HEq,0.338,F
+250,Rat,Sprague-Dawley,M/F,F,HEq,0.338,F
+251,Rat,Fischer 344,M,Both,Dose,0.38,M
+252,Rat,Fischer 344,M,Both,Dose,0.38,M
+253,Rat,Fischer 344,M,Both,Dose,0.38,M
+254,Rat,Fischer 344,M,Both,Dose,0.38,M
+255,Mouse,CD-1,M/F,M,HEq,0.0373,M
+256,Mouse,CD-1,M/F,F,HEq,0.0353,F
+257,Mouse,CD-1,M/F,Both,HEq,0.0363,Both
+258,Mouse,CDF1,M/F,F,Dose,0.0353,F
+259,Mouse,CDF1,M/F,Both,Dose,0.0363,Both
+260,Rat,Wistar,M/F,M,Dose,0.462,M
+261,Rat,Wistar,M/F,F,Dose,0.297,F
+262,Rat,Wistar,M/F,M,Dose,0.462,M
+263,Rat,Wistar,M/F,F,Dose,0.297,F
+264,Rat,Wistar,M/F,F,Dose,0.297,F
+265,Rat,Wistar,M/F,F,Dose,0.297,F
+266,Rat,Wistar,M/F,M,Dose,0.462,M
+267,Rat,Wistar,M/F,F,Dose,0.297,F
+268,Rat,Fischer 344,M,Both,Dose,0.38,M
+269,Rat,Fischer 344,M,Both,Dose,0.38,M
+270,Rat,Fischer 344,M,Both,Dose,0.38,M
+271,Mouse,B6C3F1,M/F,F,Dose,0.0353,F
