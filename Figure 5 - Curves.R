@@ -2,6 +2,9 @@ library(viridis)
 library(ggplot2)
 library(stats)
 library(ggpubr)
+library(data.table)
+library(lsr)
+library(scales)
 
 # Data loading and Parameter setting
 functionfolder <- "functions"
@@ -13,21 +16,21 @@ bmdfolder <- "BMD-data"
 total.data <- fread(file.path(bmdfolder,"Total_data_121821.csv"))
 datasets_dich <- fread(file.path(bmdfolder,"BMD_data_121821.csv"))
 bw.a.df <- fread(file.path(bmdfolder,"BW_data_final_121821.csv"))
-bmds.df <- fread(file.path(bmdfolder,"BMDS_RSD_020422.csv")) # Should be uploaded on GitHub
+bmds.df <- fread(file.path(bmdfolder,"BMDS_RSD_020422.csv")) 
 bbmd.df <- fread(file.path(bmdfolder,"Summary_Output_data.csv"))
 
 resultsfolder <- "results"
 rsd.06.df <- fread(file.path(resultsfolder,"RSD06.csv"))
 rsd.05.df <- fread(file.path(resultsfolder,"RSD05.csv"))
 rsd.04.df <- fread(file.path(resultsfolder,"RSD04.csv"))
-hdmi.df <- fread(file.path(resultsfolder,"HDMI_filtered.csv"))
+hdmi.output.df <- fread(file.path(resultsfolder,"HDMI_filtered.csv"))
 
 study.index <- unique(datasets_dich[,1])
 num.study <- length(study.index)
-study.index.all <- datasets_dich[,1]
-dose.all <- datasets_dich[,2]
-subjnum.all <- datasets_dich[,3]
-casenum.all <- datasets_dich[,4]
+study.index.all <- datasets_dich[[1]]
+dose.all <- datasets_dich[[2]]
+subjnum.all <- datasets_dich[[3]]
+casenum.all <- datasets_dich[[4]]
 zeroish <- 1e-8  # Globle Variable
 
 bw.a.df <- bw.a.df[c(1:98,100:197,199:273),c("Index","bw.a")]
@@ -35,7 +38,7 @@ bw.a.df$Index <- 1:271
 colnames(bw.a.df) <- c("Dataset","bw.a")
 bw.h <- 70
 
-bbmd.bmdl <- bbmd.df[,c("X","MA.ext10L")]
+bbmd.bmdl <- bbmd.df[,c("V1","MA-ext10L")]
 colnames(bbmd.bmdl) <- c("Index","BMDL")
 bbmd.bmdl$DAF <- (bw.a.df$bw.a/70)^0.25
 bbmd.bmdl$HED <- bbmd.bmdl$BMDL*bbmd.bmdl$DAF
@@ -52,22 +55,23 @@ for (s in 1:10){
   min.resp.bmr <- min(ncase/nsub)+0.1
   
   ma.bmdl <- bbmd.bmdl$BMDL[s]
-  bbmd.hed <- bbmd.bmdl$HED[s] * dose.max
+  bbmd.hed <- bbmd.bmdl$HED[s]
   
-  # Figure 5A - length(study.index)
-  setwd("C:/Users/lover/OneDrive - Texas A&M University/Projects/CTV/Plots & Values - 081222")
+  # # Figure 5A - length(study.index)
+  # THESE FILES NEED TO BE UPLOADED TO GITHUB - put in the BMD-data folder
+  # setwd("C:/Users/lover/OneDrive - Texas A&M University/Projects/CTV/Plots & Values - 081222")
   
-  temp.df <- read.csv(paste0("Index ",s,".csv"),as.is=TRUE)
+  temp.df <- read.csv(file.path(bmdfolder,"BBMD-outputs",paste0("Index ",s,".csv")),as.is=TRUE)
   temp.df <- temp.df[,2:52]
   plot.df <- as.data.frame(t(apply(temp.df,2,quantile,probs=c(0.05,0.5,0.95))))
   plot.df$Dose <- rownames(plot.df)
   plot.df$Dose <- as.numeric(gsub("X","",plot.df$Dose))
-  
+
   act.data <- data.frame(Dose=dose.temp,Response=ncase/nsub)
-  
+
   bmr.approx <- approx(plot.df$Dose,plot.df$`95%`,xout=ma.bmdl)[2][[1]]
-  
-  p1 <- ggplot(plot.df,aes(x=Dose,y=`50%`)) + 
+
+  p1 <- ggplot(plot.df,aes(x=Dose,y=`50%`)) +
     geom_ribbon(aes(ymin=`5%`,ymax=`95%`),fill="#FDE725FF") +
     geom_line() + ylim(0,1) +
     geom_point(data=act.data,aes(x=Dose,y=Response)) +
@@ -75,7 +79,7 @@ for (s in 1:10){
     geom_segment(aes(x=-Inf,y=bmr.approx,xend=ma.bmdl,yend=bmr.approx),linetype="dotted") +
     geom_segment(aes(x=ma.bmdl,y=-Inf,xend=ma.bmdl,yend=bmr.approx),linetype="dotted") +
     theme_classic() + xlab("Dose (mg/kg-day)") + ylab("Incidence") + ggtitle("D-R 90% CI")
-  
+
   # Figure 5B
   rsd.06 <- rsd.06.5th[s]
   rsd.05 <- rsd.05.5th[s]
@@ -101,7 +105,15 @@ for (s in 1:10){
   p2 <- ggplot(hdmi.med.plot.df) +
     geom_line(aes(x=`X50.`,y=indivrisk)) +
     geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#541352FF",alpha=0.5) +
-    scale_x_log10() + scale_y_log10() + theme_classic() +
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", scales::math_format(10^.x))) + 
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", scales::math_format(10^.x))) + 
+    annotation_logticks(  short = unit(0.05, "cm"),
+                          mid = unit(0.1, "cm"),
+                          long = unit(0.15, "cm"),
+                          size = 0.25)+
+    theme_classic() +
     coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
     geom_point(aes(x=bbmd.hed,y=0.1)) + # BBMD - HED
     geom_segment(aes(x = 1e-6,xend = bbmd.hed,
@@ -114,7 +126,15 @@ for (s in 1:10){
   p3 <- ggplot(hdmi.01.plot.df) +
     geom_line(aes(x=`X50.`,y=indivrisk)) +
     geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#2A788EFF",alpha=0.5) +
-    scale_x_log10() + scale_y_log10() + theme_classic() +
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", scales::math_format(10^.x))) + 
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", scales::math_format(10^.x))) + 
+    annotation_logticks(  short = unit(0.05, "cm"),
+                          mid = unit(0.1, "cm"),
+                          long = unit(0.15, "cm"),
+                          size = 0.25)+
+    theme_classic() +
     coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
     geom_point(aes(x=bbmd.hed,y=0.1)) + # BBMD - HED
     geom_segment(aes(x = 1e-6,xend = bbmd.hed,
@@ -129,12 +149,20 @@ for (s in 1:10){
     geom_segment(aes(x = 1e-7,xend = bbmd.hed,
                      y = 1e-7,yend = 0.1),linetype="dashed") +
     geom_point(aes(x=10^rsd.06,y=1e-6),shape=18,size=3) +
-    geom_point(aes(x=10^rsd.05,y=1e-5),shape=18,size=3) +
-    geom_point(aes(x=10^rsd.04,y=1e-4),shape=18,size=3) +
-    scale_x_log10() + scale_y_log10() + 
+    # geom_point(aes(x=10^rsd.05,y=1e-5),shape=18,size=3) +
+    # geom_point(aes(x=10^rsd.04,y=1e-4),shape=18,size=3) +
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", scales::math_format(10^.x))) + 
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                  labels = trans_format("log10", scales::math_format(10^.x))) + 
+    annotation_logticks(  short = unit(0.05, "cm"),
+                          mid = unit(0.1, "cm"),
+                          long = unit(0.15, "cm"),
+                          size = 0.25)+
+    theme_classic() +
     coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
     xlab("Dose (mg/kg-day)") + ylab("Population Risk") + ggtitle("Population Risk") +
-    theme_classic() + theme(legend.position="none")
+    theme(legend.position="none")
   
   # ggarrange
   plot <- ggarrange(p1,p2,p3,p4,ncol=1)
