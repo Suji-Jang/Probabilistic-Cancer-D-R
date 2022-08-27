@@ -58,7 +58,7 @@ for (s in 1:10){
   bbmd.hed <- bbmd.bmdl$HED[s]
   
   # # Figure 5A - length(study.index)
-  # THESE FILES NEED TO BE UPLOADED TO GITHUB - put in the BMD-data folder
+  # THESE FILES NEED TO BE UPLOADED TO GITHUB - put in the BMD-data folder, in new BBMD-outputs subfolder
   # setwd("C:/Users/lover/OneDrive - Texas A&M University/Projects/CTV/Plots & Values - 081222")
   
   temp.df <- read.csv(file.path(bmdfolder,"BBMD-outputs",paste0("Index ",s,".csv")),as.is=TRUE)
