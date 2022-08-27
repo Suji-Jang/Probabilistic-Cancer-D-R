@@ -38,3 +38,4 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 BMD-data/.DS_Store
+BMD-data/BBMD-outputs/.DS_Store
