@@ -20,9 +20,9 @@ bmds.df <- fread(file.path(bmdfolder,"BMDS_RSD_020422.csv"))
 bbmd.df <- fread(file.path(bmdfolder,"Summary_Output_data.csv"))
 
 resultsfolder <- "results"
-rsd.06.df <- fread(file.path(resultsfolder,"RSD06.csv"))
-rsd.05.df <- fread(file.path(resultsfolder,"RSD05.csv"))
-rsd.04.df <- fread(file.path(resultsfolder,"RSD04.csv"))
+rsd.06.df <- fread(file.path(resultsfolder,"RSD06.quants.csv"))
+rsd.05.df <- fread(file.path(resultsfolder,"RSD05.quants.csv"))
+rsd.04.df <- fread(file.path(resultsfolder,"RSD04.quants.csv"))
 hdmi.output.df <- fread(file.path(resultsfolder,"HDMI_filtered.csv"))
 
 study.index <- unique(datasets_dich[,1])
@@ -43,11 +43,11 @@ colnames(bbmd.bmdl) <- c("Index","BMDL")
 bbmd.bmdl$DAF <- (bw.a.df$bw.a/70)^0.25
 bbmd.bmdl$HED <- bbmd.bmdl$BMDL*bbmd.bmdl$DAF
 
-rsd.06.5th <- rsd.06.df$Prob.95
-rsd.05.5th <- rsd.05.df$Prob.95
-rsd.04.5th <- rsd.04.df$Prob.95
+rsd.06.5th <- rsd.06.df$X5.
+rsd.05.5th <- rsd.05.df$X5.
+rsd.04.5th <- rsd.04.df$X5.
 
-for (s in 1:10){
+for (s in 1:271) {
   dose.temp<-dose.all[study.index.all==s]
   nsub<-subjnum.all[study.index.all==s]
   ncase<-casenum.all[study.index.all==s]
@@ -58,9 +58,6 @@ for (s in 1:10){
   bbmd.hed <- bbmd.bmdl$HED[s]
   
   # # Figure 5A - length(study.index)
-  # THESE FILES NEED TO BE UPLOADED TO GITHUB - put in the BMD-data folder, in new BBMD-outputs subfolder
-  # setwd("C:/Users/lover/OneDrive - Texas A&M University/Projects/CTV/Plots & Values - 081222")
-  
   temp.df <- read.csv(file.path(bmdfolder,"BBMD-outputs",paste0("Index ",s,".csv")),as.is=TRUE)
   temp.df <- temp.df[,2:52]
   plot.df <- as.data.frame(t(apply(temp.df,2,quantile,probs=c(0.05,0.5,0.95))))
@@ -75,7 +72,7 @@ for (s in 1:10){
     geom_ribbon(aes(ymin=`5%`,ymax=`95%`),fill="#FDE725FF") +
     geom_line() + ylim(0,1) +
     geom_point(data=act.data,aes(x=Dose,y=Response)) +
-    geom_point(aes(x=ma.bmdl,y=bmr.approx),shape=2,size=3) +
+    geom_point(aes(x=ma.bmdl,y=bmr.approx),shape=6,size=3) +
     geom_segment(aes(x=-Inf,y=bmr.approx,xend=ma.bmdl,yend=bmr.approx),linetype="dotted") +
     geom_segment(aes(x=ma.bmdl,y=-Inf,xend=ma.bmdl,yend=bmr.approx),linetype="dotted") +
     theme_classic() + xlab("Dose (mg/kg-day)") + ylab("Incidence") + ggtitle("D-R 90% CI")
@@ -92,7 +89,8 @@ for (s in 1:10){
                                                  bw.a = bw.a,
                                                  bw.h = bw.h,
                                                  n.samp=2000)
-  Dose.vec <- 10^seq(rsd.06,3,0.5)
+  Dose.vec <- 10^seq(floor(min(rsd.06,log10(bbmd.hed*1e-5))),
+                     ceiling(log10(dose.max)),0.5)
   NormDose.vec <- Dose.vec/dose.max
   pop.incidence.df <- get.pop.incidence(NormDose.vec,
                                         uncertainty.samples,
@@ -114,9 +112,10 @@ for (s in 1:10){
                           long = unit(0.15, "cm"),
                           size = 0.25)+
     theme_classic() +
-    coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
-    geom_point(aes(x=bbmd.hed,y=0.1)) + # BBMD - HED
-    geom_segment(aes(x = 1e-6,xend = bbmd.hed,
+    coord_cartesian(xlim=range(pop.incidence.df$OrigDose),
+                    ylim=c(1e-6,0.1),expand=FALSE)+
+    geom_point(aes(x=bbmd.hed,y=0.1),shape=25,size=5,fill="black") + # BBMD - HED
+    geom_segment(aes(x = bbmd.hed*1e-5,xend = bbmd.hed, 
                      y = 1e-6,yend = 0.1),linetype="dashed") + 
     xlab("Dose (mg/kg-day)") + ylab("Individual Risk (I = 50%)") + ggtitle("Individual Risk(I = 50%)")
   
@@ -135,9 +134,10 @@ for (s in 1:10){
                           long = unit(0.15, "cm"),
                           size = 0.25)+
     theme_classic() +
-    coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
-    geom_point(aes(x=bbmd.hed,y=0.1)) + # BBMD - HED
-    geom_segment(aes(x = 1e-6,xend = bbmd.hed,
+    coord_cartesian(xlim=range(pop.incidence.df$OrigDose),
+                    ylim=c(1e-6,0.1),expand=FALSE)+
+    geom_point(aes(x=bbmd.hed,y=0.1),shape=25,size=5,fill="black") + # BBMD - HED
+    geom_segment(aes(x = bbmd.hed*1e-5,xend = bbmd.hed,
                      y = 1e-6,yend = 0.1),linetype="dashed") + 
     xlab("Dose (mg/kg-day)") + ylab("Individual Risk (I = 1%)") + ggtitle("Individual Risk(I = 1%)")
   
@@ -145,10 +145,10 @@ for (s in 1:10){
   p4 <- ggplot(pop.incidence.df,aes(x=OrigDose,y=`50%`)) +
     geom_ribbon(aes(ymin=`5%`,ymax=`95%`),fill="#7AD151FF") + # 90% CI of population incidence
     geom_line() +  # Median population incidence
-    geom_point(aes(x=bbmd.hed,y=0.1)) + # BBMD - HED
-    geom_segment(aes(x = 1e-7,xend = bbmd.hed,
-                     y = 1e-7,yend = 0.1),linetype="dashed") +
-    geom_point(aes(x=10^rsd.06,y=1e-6),shape=18,size=3) +
+    geom_point(aes(x=bbmd.hed,y=0.1),shape=25,size=5,fill="black") + # BBMD - HED
+    geom_segment(aes(x = bbmd.hed*1e-5,xend = bbmd.hed, 
+                     y = 1e-6,yend = 0.1),linetype="dashed") +
+    geom_point(aes(x=10^rsd.06,y=1e-6),shape=17,size=5) +
     # geom_point(aes(x=10^rsd.05,y=1e-5),shape=18,size=3) +
     # geom_point(aes(x=10^rsd.04,y=1e-4),shape=18,size=3) +
     scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x), 
@@ -160,13 +160,14 @@ for (s in 1:10){
                           long = unit(0.15, "cm"),
                           size = 0.25)+
     theme_classic() +
-    coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
+    coord_cartesian(xlim=range(pop.incidence.df$OrigDose),
+                    ylim=c(1e-6,0.1),expand=FALSE)+
     xlab("Dose (mg/kg-day)") + ylab("Population Risk") + ggtitle("Population Risk") +
     theme(legend.position="none")
   
   # ggarrange
-  plot <- ggarrange(p1,p2,p3,p4,ncol=1)
-  annotate_figure(plot,top=text_grob(paste("Index",s), face="bold",size=14))
-  ggsave(paste("Fig 5 - Index",s,".pdf"),width=4,height=12)
+  sumplot <- ggarrange(p1,p2,p3,p4,ncol=1) 
+  annotate_figure(sumplot,top=text_grob(paste("Index",s), face="bold",size=14))
+  ggsave(file.path(resultsfolder,"Summary Figures",paste("SummaryFigure - Index",s,".pdf")),width=4,height=12)
   
 }

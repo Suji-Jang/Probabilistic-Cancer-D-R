@@ -52,7 +52,7 @@ for (k in 1:3) {
     samp.parms <- subset(total.data,Dataset==datasetnum)[,-1] # Remove first column which is dataset #
     bw.a <- subset(bw.a.df,Dataset==datasetnum)$bw.a[1]
     ## Uncertainty samples
-    set.seed(314159)
+    set.seed(3.14159)
     uncertainty.samples <- get.uncertainty.samples(samp.parms,
                                                    bw.a = bw.a, # Animal Body Weight
                                                    bw.h = bw.h,

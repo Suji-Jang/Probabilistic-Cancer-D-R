@@ -14,7 +14,7 @@ calc.RSD.samples <- function(
   RSD.samples[1:n.samp] <- NA
   for (j in 1:n.samp) {
     func <- function(log10dose) { # 0 when pop.incidence.onesample = pop.incidence
-      set.seed(314159)
+      set.seed(314159) # use same random population each time
       dose <- 10^log10dose
       dose.median <- dose * uncertainty.samples$AHU[j]*
         uncertainty.samples$OU[j]/uncertainty.samples$DAF[j];
@@ -23,11 +23,12 @@ calc.RSD.samples <- function(
                                              as.numeric(uncertainty.samples$parms[j,]),
                                              uncertainty.samples$modelname[j]))
       delta <- pop.incidence.onesample/pop.incidence - 1
+      return(delta)
     }
     if (func(Inf) > 0 & func(-Inf) < 0) {
       try({
-        low <- log10(bmdu10) - 20
-        high <- log10(bmdu10) + 5
+        low <- log10(bmdu10/dose.max) - 20
+        high <- log10(bmdu10/dose.max) + 5
         soln <- uniroot(f = func,interval = c(low,high));
         RSD.samples[j] <- dose.max * 10^soln$root;
         if (abs(soln$f.root) > 0.01) print(paste(soln$f.root,func(soln$root)))

@@ -53,6 +53,7 @@ calc.pop.incidence.samples <- function(
   # Generate population incidence for each sample
   pop.incidence.samples<-numeric(n.samp)
   for (j in 1:n.samp) {
+    set.seed(314159) # use same random population each time
     dose.median <- dose * uncertainty.samples$AHU[j]*
       uncertainty.samples$OU[j]/uncertainty.samples$DAF[j];
     dose.distrib <- dose.median*exp(rnorm(n.pop)*uncertainty.samples$sigmaH[j]);
@@ -88,9 +89,13 @@ get.pop.incidence <- function(
                       AHU=log(uncertainty.samples$AHU),
                       OU=log(uncertainty.samples$OU))
     tmp <- tmp[!is.infinite(tmp$pop.incidence),] # remove infinities
-    pop.incidence.aov<-aov(pop.incidence~modelname+sigmaH+DAF+AHU+OU,data=tmp)
-    pop.incidence.etasq<-as.data.frame(t(etaSquared(pop.incidence.aov)[,"eta.sq"]))
-    
+    if (length(unique(tmp$modelname))>1) {
+      pop.incidence.aov<-aov(pop.incidence~modelname+sigmaH+DAF+AHU+OU,data=tmp)
+      pop.incidence.etasq<-as.data.frame(t(etaSquared(pop.incidence.aov)[,"eta.sq"]))
+    } else {
+      pop.incidence.aov<-aov(pop.incidence~sigmaH+DAF+AHU+OU,data=tmp)
+      pop.incidence.etasq<-cbind(data.frame(modelname=0),as.data.frame(t(etaSquared(pop.incidence.aov)[,"eta.sq"])))
+    }
     # Combined
     pop.incidence.vec<-rbind(pop.incidence.vec,
                              cbind(pop.incidence.quantiles,pop.incidence.etasq))
