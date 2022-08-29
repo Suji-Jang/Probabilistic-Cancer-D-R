@@ -20,6 +20,7 @@ bmds.df <- fread(file.path(bmdfolder,"BMDS_RSD_020422.csv"))
 bbmd.df <- fread(file.path(bmdfolder,"Summary_Output_data.csv"))
 
 resultsfolder <- "results"
+# Replaced with recalcualted RSD06 values
 rsd.06.df <- fread(file.path(resultsfolder,"RSD06.quants.csv"))
 rsd.05.df <- fread(file.path(resultsfolder,"RSD05.quants.csv"))
 rsd.04.df <- fread(file.path(resultsfolder,"RSD04.quants.csv"))
@@ -33,11 +34,6 @@ subjnum.all <- datasets_dich[[3]]
 casenum.all <- datasets_dich[[4]]
 zeroish <- 1e-8  # Globle Variable
 
-bw.a.df <- bw.a.df[c(1:98,100:197,199:273),c("Index","bw.a")]
-bw.a.df$Index <- 1:271
-colnames(bw.a.df) <- c("Dataset","bw.a")
-bw.h <- 70
-
 bbmd.bmdl <- bbmd.df[,c("V1","MA-ext10L")]
 colnames(bbmd.bmdl) <- c("Index","BMDL")
 bbmd.bmdl$DAF <- (bw.a.df$bw.a/70)^0.25
@@ -47,7 +43,7 @@ rsd.06.5th <- rsd.06.df$X5.
 rsd.05.5th <- rsd.05.df$X5.
 rsd.04.5th <- rsd.04.df$X5.
 
-for (s in 1:271) {
+for (s in 99:269) {
   dose.temp<-dose.all[study.index.all==s]
   nsub<-subjnum.all[study.index.all==s]
   ncase<-casenum.all[study.index.all==s]
@@ -58,11 +54,12 @@ for (s in 1:271) {
   bbmd.hed <- bbmd.bmdl$HED[s]
   
   # # Figure 5A - length(study.index)
-  temp.df <- read.csv(file.path(bmdfolder,"BBMD-outputs",paste0("Index ",s,".csv")),as.is=TRUE)
+  # replaced read.csv with fread
+  temp.df <- fread(file.path(bmdfolder,"BBMD-outputs",paste0("Index ",s,".csv")))
   temp.df <- temp.df[,2:52]
   plot.df <- as.data.frame(t(apply(temp.df,2,quantile,probs=c(0.05,0.5,0.95))))
   plot.df$Dose <- rownames(plot.df)
-  plot.df$Dose <- as.numeric(gsub("X","",plot.df$Dose))
+  plot.df$Dose <- as.numeric(plot.df$Dose)
 
   act.data <- data.frame(Dose=dose.temp,Response=ncase/nsub)
 
@@ -83,7 +80,7 @@ for (s in 1:271) {
   rsd.04 <- rsd.04.5th[s]
   
   samp.parms <- subset(total.data,Dataset==s)[,-1] # Removing first column (dataset number) #
-  bw.a <- subset(bw.a.df,Dataset==s)$bw.a[1] # Animal body weight
+  bw.a <- subset(bw.a.df,Index==s)$bw.a[1] # Animal body weight
   set.seed(3.14159)
   uncertainty.samples <- get.uncertainty.samples(samp.parms,
                                                  bw.a = bw.a,

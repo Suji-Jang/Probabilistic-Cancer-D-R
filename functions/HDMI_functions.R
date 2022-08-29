@@ -26,7 +26,7 @@ get.indivrisk.incidence <- function(
   prob=c(0.05,0.5,0.95), # Quantiles to report
   dose.max = 1
 ) {
-  cat("Calculating HD50 samples...\n");
+  # cat("Calculating HD50 samples...\n");
   bmd.samples <- dose.max * calc.bmd.samples(indivrisk,uncertainty.samples)
   HD50.samples <- bmd.samples * 
     uncertainty.samples$DAF/(uncertainty.samples$AHU*uncertainty.samples$OU)
