@@ -83,7 +83,7 @@ get.pop.incidence <- function(
     # Etasq=Percent contribution to variance
     ## Take double log to regularize
     tmp <- data.frame(pop.incidence=log(-log(pop.incidence.samples)),
-                      modelname=uncertainty.samples$modelname$Model,
+                      modelname=uncertainty.samples$modelname,
                       sigmaH=log(uncertainty.samples$sigmaH),
                       DAF=log(uncertainty.samples$DAF),
                       AHU=log(uncertainty.samples$AHU),
