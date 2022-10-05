@@ -16,10 +16,6 @@ bmd.info <- fread(file.path(bmdfolder,"BMD_w_info_112921.csv"))
 bw.a.df <- fread(file.path(bmdfolder,"BW_data_final_121821.csv"))
 resultsfolder <- "results"
 
-RSD04 <- fread(file.path(resultsfolder,"RSD04.csv"))
-RSD05 <- fread(file.path(resultsfolder,"RSD05.csv"))
-RSD06 <- fread(file.path(resultsfolder,"RSD06.csv"))
-
 dosemax.df <- aggregate(Dose ~ Study_Index,max,data=bmddata)
 bw.a.df <- bw.a.df[,c("Index","bw.a")]
 colnames(bw.a.df) <- c("Dataset","bw.a")
@@ -29,20 +25,16 @@ for (k in 1:3) {
   if (k==1) {
     risklevel <- 1e-4
     RSD.label <- "RSD04"
-    RSD.orig <- RSD04
   } else if (k==2) {
     risklevel <- 1e-5
     RSD.label <- "RSD05"
-    RSD.orig <- RSD05
   } else if (k==3) {
     risklevel <- 1e-6
     RSD.label <- "RSD06"
-    RSD.orig <- RSD06
   }
   n.samp <- 2000
   n.pop <- 1e4
-  pdf(paste0("check",RSD.label,"calc_2000.pdf"))
-  par(mfrow=c(2,2))
+
   RSD.df <- data.frame()
   # RSD.etasq.df <- data.frame()
   RSD.samps.df <- data.frame()
@@ -71,12 +63,7 @@ for (k in 1:3) {
     RSD.quants <- log10(quantile(RSD.samples,prob=seq(0.01,0.99,0.01),na.rm=TRUE))
     RSD.df <- rbind(RSD.df,
                     cbind(data.frame(Dataset=datasetnum,as.data.frame(t(RSD.quants)))))
-    # Compare with original
-    RSD.quants.orig <- rev(as.numeric(RSD.orig[datasetnum,-(1:3)]))
-    plot(RSD.quants.orig,RSD.quants,main=paste(RSD.label,"Dataset",datasetnum))
-    abline(0,1)
   }
-  dev.off()
   fwrite(RSD.samps.df,file.path(resultsfolder,paste0(RSD.label,"samples.csv")))
   fwrite(RSD.df,file.path(resultsfolder,paste0(RSD.label,".quants.csv")))
 }
