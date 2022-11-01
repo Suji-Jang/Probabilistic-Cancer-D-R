@@ -3,6 +3,7 @@ library(reshape2)
 library(ggpubr)
 library(viridis)
 library(scales)
+library(data.table)
 
 functionfolder <- "functions"
 source(file.path(functionfolder,"Pop_incidence_functions.R"))
@@ -19,6 +20,7 @@ resultsfolder <- "results"
 
 errorbar.df <- data.frame(Index=1:255,MA.BMDL=ma.df[,"BMDL.10"],MA.BMD=ma.df[,"BMD.10"],MA.BMDU=ma.df[,"BMDU.10"],
                           HW.BMDL=hw.df[,"BMDL.10"],BMDS.BMDL=bmds.df[,"BMDL"])
+colnames(errorbar.df) <- c("Index","MA.BMDL","MA.BMD","MA.BMDU","HW.BMDL","BMDS.BMDL")
 
 errorbar.df <- errorbar.df[order(errorbar.df$MA.BMD,errorbar.df$Index),]
 errorbar.df$order.index <- 1:255
@@ -48,9 +50,9 @@ p1 <- ggplot(errorbar.plot.df) +
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.1, 0.95))
   
   
-  
 hist.df <- data.frame(Index=1:255,MA.BMDL=ma.df[,"BMDL.10"],HW.BMDL=hw.df[,"BMDL.10"],
                       BMDS.BMDL=bmds.df[,"BMDL"])
+colnames(hist.df) <- c("Index","MA.BMDL","HW.BMDL","BMDS.BMDL")
 hist.df$HW.MA <- hist.df$HW.BMDL/hist.df$MA.BMDL
 hist.df$BMDS.MA <- hist.df$BMDS.BMDL/hist.df$MA.BMDL
 
@@ -85,6 +87,7 @@ ggsave(file.path(resultsfolder,"Figure 2 - BMDL_100722.pdf"),height=10,width=8)
 errorbar.hw.plot.df <- errorbar.df[order(errorbar.df$MA.BMD,errorbar.df$Index),]
 errorbar.hw.plot.df$order.index <- 1:255
 errorbar.hw.plot.df <- errorbar.hw.plot.df[,c("order.index","MA.BMD","HW.BMDL")]
+colnames(errorbar.hw.plot.df) <- c("order.index","BMD [MA]","BMDL [HW]")
 
 errorbar.hw.plot.df <- melt(errorbar.hw.plot.df,id.vars="order.index")
 
@@ -92,12 +95,18 @@ p1 <- ggplot(errorbar.hw.plot.df) +
   geom_linerange(data=errorbar.df,mapping=aes(x=order.index,y=MA.BMD,ymin = MA.BMDL, ymax = MA.BMDU),
                  alpha=0.4,colour="#440154FF")+
   geom_point(aes(x=order.index,y=value,colour=variable,shape=variable),alpha=0.7) +
-  scale_y_log10() +
-  annotation_logticks(sides="l") +
-  ggtitle("BMDL10 Comparison") + ylab("BMDL10") +
+  scale_y_log10(limits=c(min(errorbar.df[,c("HW.BMDL","MA.BMDL")])
+                         ,max(errorbar.df[,c("HW.BMDL","MA.BMDU")])),
+                breaks=10^c(-6:4),labels=trans_format("log10",math_format(10^.x))) +
+  annotation_logticks(sides="l") + labs(tag="A") +
+  ylab(bquote(BMDL[10])) +
   scale_color_viridis(discrete=TRUE,end=0.7) +
   theme_classic() + 
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank(),axis.title.x=element_blank())
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank(),axis.title.x=element_blank(),
+        legend.title=element_blank(),legend.position = c(0.5, 0.1),
+        panel.border = element_rect(colour = "black",fill=NA), 
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.1, 0.95))
+
 
 p2 <- ggplot(hist.df,aes(x=HW.MA)) + geom_histogram() + 
   scale_x_log10(limits=c(min(hist.df$HW.MA),max(hist.df$HW.MA)),breaks=10^c(-4,-3,-2,-1,0,1,2,3,4),   
@@ -118,4 +127,4 @@ p3 <- ggplot(hist.df,aes(x=MA.BMDL,y=HW.BMDL)) + geom_point() +
 
 hist.scatter <- ggarrange(p2,p3,heights=c(5,5),widths=c(5,5)) # SIZE = 5 * 10
 sum.plot <- ggarrange(p1,hist.scatter,heights=c(6,4),widths=c(10,10),ncol=1)
-ggsave(file.path(resultsfolder,"Supple Figure - BMDL_092822.pdf"),height=10,width=8)
+ggsave(file.path(resultsfolder,"Supple Figure - BMDL_100722.pdf"),height=10,width=8)
