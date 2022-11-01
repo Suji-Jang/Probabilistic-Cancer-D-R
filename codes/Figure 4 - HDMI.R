@@ -1,0 +1,248 @@
+library(ggplot2)
+library(ggh4x)
+library(viridis)
+library(scales)
+library(ggpubr)
+library(lsr)
+library(data.table)
+
+functionfolder <- "functions"
+source(file.path(functionfolder,"Pop_incidence_functions.R"))
+source(file.path(functionfolder,"BMD_functions.R"))
+source(file.path(functionfolder,"HDMI_functions.R"))
+source(file.path(functionfolder,"Extra_risk_functions.R"))
+source(file.path(functionfolder,"RSD_functions.R"))
+bmdfolder <- "BMD-data"
+dose.max <- fread(file.path(bmdfolder,"BMD_data_092022.csv"))
+total.data <- fread(file.path(bmdfolder,"Total_data_092022.csv"))
+bw.a.df <- fread(file.path(bmdfolder,"BW_data_final_092022.csv"))
+resultsfolder <- "results"
+prob.RSD6 <- fread(file.path(resultsfolder,"RSD06.quants.csv"))
+hdmi.df <- fread(file.path(resultsfolder,"HDMI_data_092922.csv"))
+figuresfolder <- "figures"
+
+hd.01.01.df <- subset(hdmi.df,(hdmi.df$indivrisk==0.01&hdmi.df$Incidence==0.01))
+hd.1e4.01.df <- subset(hdmi.df,(hdmi.df$indivrisk==1e-4&hdmi.df$Incidence==0.01))
+hd.1e6.01.df <- subset(hdmi.df,(hdmi.df$indivrisk==1e-6&hdmi.df$Incidence==0.01))
+
+dose.max <- aggregate(dose.max$Dose, by = list(dose.max$Study_Index), max)
+colnames(dose.max) <- c("Index","Dose.max")
+dose.max <- dose.max$Dose.max
+
+bw.a.df <- bw.a.df[,c("Index","bw.a")]
+colnames(bw.a.df) <- c("Dataset","bw.a")
+bw.h <- 70
+
+### For M = 0.01
+hd.pop.inc.df <- data.frame()
+for (i in 1:length(dose.max)){
+  datasetnum <- i
+  samp.parms <- subset(total.data,Dataset==datasetnum)[,-1] # Remove first column which is dataset #
+  bw.a <- subset(bw.a.df,Dataset==datasetnum)$bw.a[1]
+  
+  uncertainty.samples <- get.uncertainty.samples(samp.parms,
+                                                 bw.a = bw.a, # Animal Body Weight
+                                                 bw.h = bw.h,
+                                                 n.samp=2000)
+  
+  Dose.conv <- hd.01.01.df[datasetnum,"X5."]/dose.max[datasetnum]
+  Dose.conv <- Dose.conv$X5.
+  pop.incidence.df <- get.pop.incidence(Dose.conv,
+                                        uncertainty.samples,
+                                        n.pop = 1e4,
+                                        prob = c(0.05,0.5,0.95))
+  pop.incidence.df$Index <- datasetnum
+  hd.pop.inc.df <- rbind(hd.pop.inc.df,pop.incidence.df)
+}
+
+hd.pop.inc.df.plot <- hd.pop.inc.df[order(hd.pop.inc.df$`95%`,hd.pop.inc.df$Index),]
+hd.pop.inc.df.plot$order.index <- 1:nrow(hd.pop.inc.df.plot)
+hd.pop.inc.df.plot <- hd.pop.inc.df.plot[,c("order.index","5%","50%","95%")]
+hd.pop.inc.df.plot$point.50 <- ifelse(hd.pop.inc.df.plot$`50%`<=2e-7,0,hd.pop.inc.df.plot$`50%`) # Run to convert small values to 0
+
+### For M = 1E-4
+hd.pop.inc.1e4.df <- data.frame()
+for (i in 1:length(dose.max)){
+  datasetnum <- i
+  samp.parms <- subset(total.data,Dataset==datasetnum)[,-1] # Remove first column which is dataset #
+  bw.a <- subset(bw.a.df,Dataset==datasetnum)$bw.a[1]
+  
+  uncertainty.samples <- get.uncertainty.samples(samp.parms,
+                                                 bw.a = bw.a, # Animal Body Weight
+                                                 bw.h = bw.h,
+                                                 n.samp=2000)
+  
+  Dose.conv <- hd.1e4.01.df[datasetnum,"X5."]/dose.max[datasetnum]
+  Dose.conv <- Dose.conv$X5.
+  pop.incidence.df <- get.pop.incidence(Dose.conv,
+                                        uncertainty.samples,
+                                        n.pop = 1e4,
+                                        prob = c(0.05,0.5,0.95))
+  pop.incidence.df$Index <- datasetnum
+  hd.pop.inc.1e4.df <- rbind(hd.pop.inc.1e4.df,pop.incidence.df)
+}
+
+hd.pop.inc.1e4.df.plot <- hd.pop.inc.1e4.df[order(hd.pop.inc.1e4.df$`95%`,hd.pop.inc.1e4.df$Index),]
+hd.pop.inc.1e4.df.plot$order.index <- 1:nrow(hd.pop.inc.1e4.df.plot)
+hd.pop.inc.1e4.df.plot <- hd.pop.inc.1e4.df.plot[,c("order.index","5%","50%","95%")]
+hd.pop.inc.1e4.df.plot$point.50 <- ifelse(hd.pop.inc.1e4.df.plot$`50%`<=2e-7,0,hd.pop.inc.1e4.df.plot$`50%`) # Run to convert small values to 0
+
+### For M = 1E-6
+hd.pop.inc.1e6.df <- data.frame()
+for (i in 1:length(dose.max)){
+  datasetnum <- i
+  samp.parms <- subset(total.data,Dataset==datasetnum)[,-1] # Remove first column which is dataset #
+  bw.a <- subset(bw.a.df,Dataset==datasetnum)$bw.a[1]
+  
+  uncertainty.samples <- get.uncertainty.samples(samp.parms,
+                                                 bw.a = bw.a, # Animal Body Weight
+                                                 bw.h = bw.h,
+                                                 n.samp=2000)
+  
+  Dose.conv <- hd.1e6.01.df[datasetnum,"X5."]/dose.max[datasetnum]
+  Dose.conv <- Dose.conv$X5.
+  pop.incidence.df <- get.pop.incidence(Dose.conv,
+                                        uncertainty.samples,
+                                        n.pop = 1e4,
+                                        prob = c(0.05,0.5,0.95))
+  pop.incidence.df$Index <- datasetnum
+  hd.pop.inc.1e6.df <- rbind(hd.pop.inc.1e6.df,pop.incidence.df)
+}
+
+hd.pop.inc.1e6.df.plot <- hd.pop.inc.1e6.df[order(hd.pop.inc.1e6.df$`95%`,hd.pop.inc.1e6.df$Index),]
+hd.pop.inc.1e6.df.plot$order.index <- 1:nrow(hd.pop.inc.1e6.df.plot)
+hd.pop.inc.1e6.df.plot <- hd.pop.inc.1e6.df.plot[,c("order.index","5%","50%","95%")]
+hd.pop.inc.1e6.df.plot$point.50 <- ifelse(hd.pop.inc.1e6.df.plot$`50%`<=2e-7,0,hd.pop.inc.1e6.df.plot$`50%`) # Run to convert small values to 0
+
+# Scatterplot for RSD and HDMI
+prob.RSD6 <- prob.RSD6[,c("Dataset","X5.")]
+colnames(prob.RSD6) <- c("Index","Prob.5")
+
+prob.rfd.rsd <- data.frame(Index=1:255,RSD6=prob.RSD6$Prob.5,HDMI.01=hd.01.01.df$X5.,HDMI.1E4=hd.1e4.01.df$X5.,
+                           HDMI.1E6=hd.1e6.01.df$X5.)
+colnames(prob.rfd.rsd) <- c("Index","RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")
+prob.rfd.rsd[,"RSD6"] <- 10^prob.rfd.rsd[,"RSD6"]
+
+prob.rfd.rsd$HDMI.01.RSD6 <- prob.rfd.rsd$HDMI.01/prob.rfd.rsd$RSD6
+prob.rfd.rsd$HDMI.1E4.RSD6 <- prob.rfd.rsd$HDMI.1E4/prob.rfd.rsd$RSD6
+prob.rfd.rsd$HDMI.1E6.RSD6 <- prob.rfd.rsd$HDMI.1E6/prob.rfd.rsd$RSD6
+
+p1 <- ggplot(hd.pop.inc.df.plot) +
+  geom_point(aes(x=order.index,y=point.50),color="#440154FF") +
+  geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#440154FF",alpha=0.2)+
+  scale_y_log10(breaks=10^(-6:1),labels=trans_format("log10",math_format(10^.x))) + 
+  coord_cartesian(ylim=c(5e-7,max(hd.pop.inc.df.plot$`95%`))) +
+  ylab("Population Incidence") + labs(tag="A") +
+  scale_color_viridis(discrete=TRUE,direction=-1) + theme_classic() +
+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank(),
+        panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.22, 0.95),
+        plot.margin=margin(0.2,0.2,1.22,0.2,"cm"))
+
+p4 <- ggplot(hd.pop.inc.1e4.df.plot) +
+  geom_point(aes(x=order.index,y=point.50),color="#365D8DFF") +
+  geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#365D8DFF",alpha=0.2)+
+  scale_y_log10(breaks=10^(-6:1),labels=trans_format("log10",math_format(10^.x))) + 
+  coord_cartesian(ylim=c(5e-7,max(hd.pop.inc.df.plot$`95%`))) +
+  ylab("Population Incidence") + labs(tag="D") +
+  scale_color_viridis(discrete=TRUE,direction=-1) + theme_classic() +
+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank(),
+        panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.22, 0.95),
+        plot.margin=margin(0.2,0.2,1.22,0.2,"cm"))
+
+p7 <- ggplot(hd.pop.inc.1e6.df.plot) +
+  geom_point(aes(x=order.index,y=point.50),color="#27AD81FF") +
+  geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#27AD81FF",alpha=0.2)+
+  scale_y_log10(breaks=10^(-6:1),labels=trans_format("log10",math_format(10^.x))) + 
+  coord_cartesian(ylim=c(5e-7,max(hd.pop.inc.df.plot$`95%`))) +
+  ylab("Population Incidence") + labs(tag="G") +
+  scale_color_viridis(discrete=TRUE,direction=-1) + theme_classic() +
+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank(),
+        panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.22, 0.95),
+        plot.margin=margin(0.2,0.2,1.22,0.2,"cm"))
+
+p2 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.01)) + geom_point(color="#440154FF") +
+  geom_abline() + labs(tag="B") +
+  scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")])),
+                minor_breaks = 10^seq(-12,0), guide = "axis_minor",
+                breaks=10^seq(-12,0,by=3),labels=trans_format("log10",math_format(10^.x))) +
+  scale_y_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")])),
+                minor_breaks = 10^seq(-12,0), guide = "axis_minor",
+                breaks=10^seq(-12,0,by=3),labels=trans_format("log10",math_format(10^.x))) +
+  theme_classic() + xlab(bquote("Prob. RSD6 " * (mg/kg-d))) + ylab(bquote(HD["01"]^"01" * (mg/kg-d))) +
+  theme(panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.24, 0.95),
+        ggh4x.axis.ticks.length.minor = rel(1))
+
+p5 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.1E4)) + geom_point(color="#365D8DFF") +
+  geom_abline() + labs(tag="E") +
+  scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")])),
+                minor_breaks = 10^seq(-12,0), guide = "axis_minor",
+                breaks=10^seq(-12,0,by=3),labels=trans_format("log10",math_format(10^.x))) +
+  scale_y_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")])),
+                minor_breaks = 10^seq(-12,0), guide = "axis_minor",
+                breaks=10^seq(-12,0,by=3),labels=trans_format("log10",math_format(10^.x))) +
+  theme_classic() + xlab(bquote("Prob. RSD6 " * (mg/kg-d))) + ylab(bquote(HD["1e-4"]^"01" * (mg/kg-d))) +
+  theme(panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.24, 0.95),
+        ggh4x.axis.ticks.length.minor = rel(1))
+
+p8 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.1E6)) + geom_point(color="#27AD81FF") +
+  geom_abline() + labs(tag="H") +
+  scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")])),
+                minor_breaks = 10^seq(-12,0), guide = "axis_minor",
+                breaks=10^seq(-12,0,by=3),labels=trans_format("log10",math_format(10^.x))) +
+  scale_y_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")])),
+                minor_breaks = 10^seq(-12,0), guide = "axis_minor",
+                breaks=10^seq(-12,0,by=3),labels=trans_format("log10",math_format(10^.x))) +
+  theme_classic() + xlab(bquote("Prob. RSD6 " * (mg/kg-d))) + ylab(bquote(HD["1e-6"]^"01" * (mg/kg-d))) +
+  theme(panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.24, 0.95),
+        ggh4x.axis.ticks.length.minor = rel(1))
+
+p3 <- ggplot(prob.rfd.rsd,aes(x=HDMI.01.RSD6)) + geom_histogram(fill="#440154FF") + labs(tag="C") +
+  scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")])),
+                minor_breaks = 10^seq(-4,8), guide = "axis_minor",
+                breaks=10^seq(-4,8,by=2),labels=trans_format("log10",math_format(10^.x))) +
+  theme_classic() + xlab(bquote(HD["01"]^"01"*" / Prob. RSD6")) + geom_vline(xintercept = 1,linetype="dashed") +
+  theme(axis.title.y=element_blank(),axis.text.y=element_blank(),axis.ticks.y=element_blank(),
+        panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.07, 0.95),
+        ggh4x.axis.ticks.length.minor = rel(1))
+
+p6 <- ggplot(prob.rfd.rsd,aes(x=HDMI.1E4.RSD6)) + geom_histogram(fill="#365D8DFF") + labs(tag="F") +
+  scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")])),
+                minor_breaks = 10^seq(-4,8), guide = "axis_minor",
+                breaks=10^seq(-4,8,by=2),labels=trans_format("log10",math_format(10^.x))) +
+  theme_classic() + xlab(bquote(HD["1e-4"]^"01"*" / Prob. RSD6")) + geom_vline(xintercept = 1,linetype="dashed") +
+  theme(axis.title.y=element_blank(),axis.text.y=element_blank(),axis.ticks.y=element_blank(),
+        panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.07, 0.95),
+        ggh4x.axis.ticks.length.minor = rel(1))
+
+
+p9 <- ggplot(prob.rfd.rsd,aes(x=HDMI.1E6.RSD6)) + geom_histogram(fill="#27AD81FF") + labs(tag="I") +
+  scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")]),
+                         max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")])),
+                minor_breaks = 10^seq(-4,8), guide = "axis_minor",
+                breaks=10^seq(-4,8,by=2),labels=trans_format("log10",math_format(10^.x))) +
+  theme_classic() + xlab(bquote(HD["1e-6"]^"01"*" / Prob. RSD6")) + geom_vline(xintercept = 1,linetype="dashed") +
+  theme(axis.title.y=element_blank(),axis.text.y=element_blank(),axis.ticks.y=element_blank(),
+        panel.border = element_rect(colour = "black",fill=NA),
+        plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.07, 0.95),
+        ggh4x.axis.ticks.length.minor = rel(1))
+
+ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9) 
+ggsave(file.path(figuresfolder,"Figure 4 - HDMI_100722.pdf"),width=10,height=10)
+
+
