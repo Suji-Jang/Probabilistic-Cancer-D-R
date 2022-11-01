@@ -54,7 +54,8 @@ for (s in 1:length(study.index)){
   bbmd.hed <- bbmd.bmdl$HED[s]
   
   # Figure 5A - length(study.index)
-  temp.df <- fread(file.path(resultsfolder,"D-R Samples",paste0("Index ",s,".csv")))
+  drsampfolder <- "results/drsamples"
+  temp.df <- fread(file.path(drsampfolder,paste0("Index ",s,".csv")))
   
   temp.df <- temp.df[,2:52]
   plot.df <- as.data.frame(t(apply(temp.df,2,quantile,probs=c(0.05,0.5,0.95))))
@@ -150,6 +151,8 @@ for (s in 1:length(study.index)){
   # ggarrange
   plot <- ggarrange(p1,p2,p3,p4,ncol=1)
   annotate_figure(plot,top=text_grob(paste("Index",s), face="bold",size=14))
-  ggsave(file.path(figuresfolder,"Figure 5 - Summary Figrues",paste("Fig 5 - Index",s,"_103122.pdf")),width=4,height=12)
+  
+  sumfigfolder <- "figures/sumfigs"
+  ggsave(file.path(sumfigfolder,paste("Fig 5 - Index",s,"_103122.pdf")),width=4,height=12)
   
 }
