@@ -3,6 +3,8 @@ library(RColorBrewer)
 library(ggplot2)
 library(lsr)
 library(data.table)
+library(GGally)
+library(ggcorrplot)
 
 bmdfolder <- "BMD-data"
 weight.df <- fread(file.path(bmdfolder,"Model_weight_092022.csv"))
@@ -26,10 +28,22 @@ heatmap.df[,1:8] <- weight.df[,2:9]/heatmap.df$row.sum
 heatmap.df <- heatmap.df[,1:8]
 colnames(heatmap.df) <- c("QL","Log","Pro","Wei","MS2","LLog","LPro","DH")
 
-heatmap.df$BMDL.Ratio <- log10(bmdl.df$BMDS.BMDL/bmdl.df$MA.BMDL)
-heatmap.df$RSD.Ratio <- log10(rsd6.df$RSD6.MA.Linear/rsd6.df$RSD6.Prob.05)
+BMDL.Ratio <- log10(bmdl.df$BMDS.BMDL/bmdl.df$MA.BMDL)
+heatmap.df$BMDL.Ratio <- BMDL.Ratio
+RSD.Ratio <- log10(rsd6.df$RSD6.MA.Linear/rsd6.df$RSD6.Prob.05)
+heatmap.df$RSD.Ratio <- RSD.Ratio
 
-mypalette <- rev(colorRampPalette(brewer.pal(9, "RdBu"))(100))
+scattermat <- ggpairs(heatmap.df)
+ggsave(file.path(figuresfolder,"Figure 6 - Scatter.pdf"),scattermat,height=5,width=5,scale=2)
+corrmat <- ggcorrplot(round(cor(heatmap.df),2), type = "lower", show.diag = TRUE,
+                      lab = TRUE,)
+ggsave(file.path(figuresfolder,"Figure 6 - Corr.pdf"),corrmat,height=5,width=5,scale=1.5)
+
+# Rescale 0 to 1 for heatmap
+heatmap.df$BMDL.Ratio <- (BMDL.Ratio-min(BMDL.Ratio))/(max(BMDL.Ratio)-min(BMDL.Ratio))
+heatmap.df$RSD.Ratio <- (RSD.Ratio-min(RSD.Ratio))/(max(RSD.Ratio)-min(RSD.Ratio))
+
+mypalette <- (colorRampPalette(brewer.pal(9, "Reds"))(100))
 
 heatmap.data <- t(heatmap.df)
 pdf(file.path(figuresfolder,"Figure 6 - Heatmap - All.pdf"),height=6,width=20)
@@ -47,8 +61,8 @@ heatmap.2(heatmap.data.RSD,col=mypalette, trace="none",density.info = "density",
 dev.off()
 
 # ANOVA
-bmdl.summary = lm(BMDL.Ratio ~ QL + Log + Pro + Wei + MS2 + LLog + LPro + DH, data = heatmap.df)
-rsd.summary = lm(RSD.Ratio ~ QL + Log + Pro + Wei + MS2 + LLog + LPro + DH, data = heatmap.df)
+bmdl.summary = lm(BMDL.Ratio ~ QL + Log + Pro + Wei + MS2 + LLog + LPro + DH - 1, data = heatmap.df)
+rsd.summary = lm(RSD.Ratio ~ QL + Log + Pro + Wei + MS2 + LLog + LPro + DH - 1, data = heatmap.df)
 
 aovbmdl <- aov(bmdl.summary)
 print(summary(bmdl.summary))
