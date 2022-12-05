@@ -6,6 +6,8 @@ library(lsr)
 library(data.table)
 library(GGally)
 library(ggcorrplot)
+library(scales)
+library(cluster)
 
 bmdfolder <- "BMD-data"
 weight.df <- fread(file.path(bmdfolder,"Model_weight_092022.csv"))
@@ -42,7 +44,7 @@ heatmap.df$RSD.CI.Ratio <- RSD.CI.Ratio
 scattermat <- ggpairs(heatmap.df)
 ggsave(file.path(figuresfolder,"Figure 6 - Scatter.pdf"),scattermat,height=5,width=5,scale=2)
 corrmat <- ggcorrplot(round(cor(heatmap.df),2), type = "lower", show.diag = TRUE,
-                      lab = TRUE,)
+                      lab = TRUE)
 ggsave(file.path(figuresfolder,"Figure 6 - Corr.pdf"),corrmat,height=5,width=5,scale=1.5)
 
 # Ratio Only
@@ -61,26 +63,44 @@ heatmap.df$RSD.CI.Ratio <- (RSD.CI.Ratio-min(RSD.CI.Ratio))/(max(RSD.CI.Ratio)-m
 
 mypalette <- (colorRampPalette(brewer.pal(9, "Reds"))(100))
 
+# Rescale with scale function
+heatmap.df[,1] <- scale(heatmap.df[,1])
+heatmap.df[,2] <- scale(heatmap.df[,2])
+heatmap.df[,3] <- scale(heatmap.df[,3])
+heatmap.df[,4] <- scale(heatmap.df[,4])
+heatmap.df[,5] <- scale(heatmap.df[,5])
+heatmap.df[,6] <- scale(heatmap.df[,6])
+heatmap.df[,7] <- scale(heatmap.df[,7])
+heatmap.df[,8] <- scale(heatmap.df[,8])
+heatmap.df$BBMD.BMDS.Ratio <- scale(BBMD.BMDS.Ratio)
+heatmap.df$BMD.CI.Ratio <- scale(BMD.CI.Ratio)
+heatmap.df$Prob.Linear.Ratio <- scale(Prob.Linear.Ratio)
+heatmap.df$RSD.CI.Ratio <- scale(RSD.CI.Ratio)
+a <- clusGap(heatmap.df,FUN=kmeans,K.max=)
+
+mypalette <- rev(colorRampPalette(brewer.pal(9, "RdBu"))(100))
+
+# Mapping
 heatmap.data <- t(heatmap.df)
-pdf(file.path(figuresfolder,"Figure 6 - Heatmap - All.pdf"),height=6,width=20)
+pdf(file.path(figuresfolder,"Figure 6 - Heatmap - All_scale_func.pdf"),height=6,width=20)
 heatmap.2(heatmap.data,col=mypalette, trace="none",density.info = "density",
           Rowv=FALSE,dendrogram="column",lwid=c(0.8,8),lhei=c(1.5,5),margins=c(2,10))
 dev.off()
 
 heatmap.data.BMDL <- t(heatmap.df)[c(1:8,9,10),]
-pdf(file.path(figuresfolder,"Figure 6 - Heatmap - BMDL.pdf"),height=6,width=20)
+pdf(file.path(figuresfolder,"Figure 6 - Heatmap - BMDL_scale_func.pdf"),height=6,width=20)
 heatmap.2(heatmap.data.BMDL,col=mypalette, trace="none",density.info = "density",
           Rowv=FALSE,dendrogram="column",lwid=c(0.8,8),lhei=c(1.5,5),margins=c(2,10))
 dev.off()
 
 heatmap.data.RSD <- t(heatmap.df)[c(1:8,11,12),]
-pdf(file.path(figuresfolder,"Figure 6 - Heatmap - RSD.pdf"),height=6,width=20)
+pdf(file.path(figuresfolder,"Figure 6 - Heatmap - RSD_scale_func.pdf"),height=6,width=20)
 heatmap.2(heatmap.data.RSD,col=mypalette, trace="none",density.info = "density",
           Rowv=FALSE,dendrogram="column",lwid=c(0.8,8),lhei=c(1.5,5),margins=c(2,10))
 dev.off()
 
 heatmap.data.Ratio <- t(heatmap.df)[c(9:12),]
-pdf(file.path(figuresfolder,"Figure 6 - Heatmap - Ratio.pdf"),height=4,width=20)
+pdf(file.path(figuresfolder,"Figure 6 - Heatmap - Ratio_scale_func.pdf"),height=4,width=20)
 heatmap.2(heatmap.data.Ratio,col=mypalette, trace="none",density.info = "density",
           Rowv=FALSE,dendrogram="column",lwid=c(0.8,8),lhei=c(0.4,0.6),margins=c(2,10),cexRow=1)
 dev.off()

@@ -17,6 +17,7 @@ total.data <- fread(file.path(bmdfolder,"Total_data_092022.csv"))
 bw.a.df <- fread(file.path(bmdfolder,"BW_data_final_092022.csv"))
 bbmd.df <- fread(file.path(bmdfolder,"Summary_Output_data_092022.csv"))
 datasets_dich <- fread(file.path(bmdfolder,"BMD_data_092022.csv"))
+chemname.df <- fread(file.path(bmdfolder,"OSF_Dose_converted_092022.csv"))
 resultsfolder <- "results"
 hdmi.df <- fread(file.path(resultsfolder,"HDMI_data_092922.csv"))
 rsd.06.df <- fread(file.path(resultsfolder,"RSD06.quants.csv"))
@@ -31,6 +32,8 @@ subjnum.all <- datasets_dich$Number
 casenum.all <- datasets_dich$Effect
 zeroish <- 1e-8  # Globle Variable
 
+chem.name <- unique(chemname.df[,c("Index","Chemical.Name")])
+
 bw.a.df <- bw.a.df[,c("Index","bw.a")]
 colnames(bw.a.df) <- c("Dataset","bw.a")
 bw.h <- 70
@@ -43,7 +46,6 @@ bbmd.bmdl$HED <- bbmd.bmdl$BMDL*bbmd.bmdl$DAF
 rsd.06.5th <- rsd.06.df$X5.
 
 for (s in 1:length(study.index)){
-  s <- 1
   dose.temp<-dose.all[study.index.all==s]
   nsub<-subjnum.all[study.index.all==s]
   ncase<-casenum.all[study.index.all==s]
@@ -66,7 +68,7 @@ for (s in 1:length(study.index)){
   
   bmr.approx <- approx(plot.df$Dose,plot.df$`95%`,xout=ma.bmdl)[2][[1]]
   
-  p1 <- ggplot(plot.df,aes(x=Dose,y=`50%`)) + labs(tag="A") +
+  p1 <- ggplot(plot.df,aes(x=Dose,y=`50%`)) + 
     geom_ribbon(aes(ymin=`5%`,ymax=`95%`),fill="#FDE725FF") +
     geom_line() + scale_x_continuous(expand=c(0,0)) + 
     scale_y_continuous(expand=c(0,0),limits=c(0,1),breaks=seq(0,1,by=0.2)) + 
@@ -76,10 +78,8 @@ for (s in 1:length(study.index)){
     geom_segment(aes(x=ma.bmdl,y=-Inf,xend=ma.bmdl,yend=bmr.approx),linetype="dotted") +
     theme_classic() + ylab("Incidence") +
     theme(axis.title.x=element_blank(),
-          panel.border = element_rect(colour = "black",fill=NA),
-          plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.18, 0.93))
+          panel.border = element_rect(colour = "black",fill=NA))
   
-
   # Figure 5B
   rsd.06 <- rsd.06.5th[s]
 
@@ -100,10 +100,10 @@ for (s in 1:length(study.index)){
   
   hdmi.med.plot.df <- subset(hdmi.df,Incidence==0.5&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=50%
 
-  p2 <- ggplot(hdmi.med.plot.df) + labs(tag="B") +
+  p2 <- ggplot(hdmi.med.plot.df) + 
     geom_line(aes(x=`X50.`,y=indivrisk)) +
     geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#541352FF",alpha=0.5) +
-    scale_x_log10(breaks=10^(-7:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
+    scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
     scale_y_log10(breaks=10^(-6:-1),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + theme_classic() +
     coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
     geom_point(aes(x=bbmd.hed,y=0.1),size=3) + 
@@ -111,17 +111,16 @@ for (s in 1:length(study.index)){
                      y = 1e-6,yend = 0.1),linetype="dashed") + 
     ylab("Individual Risk (I = 50%)") + annotation_logticks(sides="b") +
     theme(axis.title.x=element_blank(),
-          panel.border = element_rect(colour = "black",fill=NA),
-          plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.18, 0.93))
+          panel.border = element_rect(colour = "black",fill=NA))
   
   
   # Figure 5C
   hdmi.01.plot.df <- subset(hdmi.df,Incidence==0.01&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=1%
 
-  p3 <- ggplot(hdmi.01.plot.df) + labs(tag="C") +
+  p3 <- ggplot(hdmi.01.plot.df) + 
     geom_line(aes(x=`X50.`,y=indivrisk)) +
     geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#2A788EFF",alpha=0.5) +
-    scale_x_log10(breaks=10^(-7:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
+    scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
     scale_y_log10(breaks=10^(-6:-1),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + theme_classic() +
     coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
     geom_point(aes(x=bbmd.hed,y=0.1),size=3) + # BBMD - HED
@@ -129,30 +128,28 @@ for (s in 1:length(study.index)){
                      y = 1e-6,yend = 0.1),linetype="dashed") + 
     ylab("Individual Risk (I = 1%)") + annotation_logticks(sides="b") +
     theme(axis.title.x=element_blank(),
-          panel.border = element_rect(colour = "black",fill=NA),
-          plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.18, 0.93))
+          panel.border = element_rect(colour = "black",fill=NA))
   
   
   # Figure 5D
-  p4 <- ggplot(pop.incidence.df,aes(x=OrigDose,y=`50%`)) + labs(tag="D") +
+  p4 <- ggplot(pop.incidence.df,aes(x=OrigDose,y=`50%`)) +
     geom_ribbon(aes(ymin=`5%`,ymax=`95%`),fill="#7AD151FF") + # 90% CI of population incidence
     geom_line() +  # Median population incidence
     geom_point(aes(x=bbmd.hed,y=0.1),size=3) + # BBMD - HED
     geom_segment(aes(x = bbmd.hed*1e-5,xend = bbmd.hed,
                      y = 1e-6,yend = 0.1),linetype="dashed") +
     geom_point(aes(x=10^rsd.06,y=1e-6),shape=18,size=3) +
-    scale_x_log10(breaks=10^(-7:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
+    scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
     scale_y_log10(breaks=10^(-6:-1),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + theme_classic() +
     coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
     xlab("Dose (mg/kg-d)") + ylab("Population Risk") + annotation_logticks(sides="b") +
-    theme(legend.position="none",panel.border = element_rect(colour = "black",fill=NA),
-          plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.18, 0.93))
+    theme(legend.position="none",panel.border = element_rect(colour = "black",fill=NA))
   
   # ggarrange
   plot <- ggarrange(p1,p2,p3,p4,ncol=1)
-  annotate_figure(plot,top=text_grob(paste("Index",s), face="bold",size=14))
+  annotate_figure(plot,top=text_grob(chem.name[s,"Chemical.Name"], face="bold")) #size=9?
   
-  sumfigfolder <- "figures/sumfigs"
-  ggsave(file.path(sumfigfolder,paste("Fig 5 - Index",s,"_103122.pdf")),width=4,height=12)
+  sumfigfolder <- "figures/sumfigs2"
+  ggsave(file.path(sumfigfolder,paste("Index",s,"_120122.pdf")),width=4,height=12)
   
 }
