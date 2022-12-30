@@ -541,7 +541,7 @@ colnames(output.mtx)<-cname1
 
 mod.summary <- as.data.frame(output.mtx)[,c("ql-weight","log-weight","pro-weight","wei-weight","ms2-weight",
                               "llog-weight","lpro-weight","dh-weight")]
-
+names(mod.summary) <- gsub("-","\\.",names(mod.summary))
 mod.summary <- round(mod.summary * 1000, digits=0)
  
 ql.list <- mod.summary$ql.weight
@@ -553,11 +553,12 @@ llog.list <- mod.summary$llog.weight
 lpro.list <- mod.summary$lpro.weight
 dh.list <- mod.summary$dh.weight
 
-ql.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+ql.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(ql.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(ql.list)) {
   if (ql.list[i]!=0){
     rand.par <- output.par.ql[sample(nrow(output.par.ql),size=ql.list[i],replace=FALSE),(2*i-1):(2*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2")
     rand.par$Dataset <- i
     rand.par$Model <- "Quantal-Linear"
@@ -569,11 +570,12 @@ for (i in 1:length(ql.list)) {
 }
 sum(mod.summary$ql.weight)
 
-log.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+log.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(log.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(log.list)) {
   if (log.list[i]!=0){
     rand.par <- output.par.log[sample(nrow(output.par.log),size=log.list[i],replace=FALSE),(2*i-1):(2*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2")
     rand.par$Dataset <- i
     rand.par$Model <- "Logistic"
@@ -585,11 +587,12 @@ for (i in 1:length(log.list)) {
 }
 sum(mod.summary$log.weight)
 
-pro.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+pro.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(pro.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(pro.list)) {
   if (pro.list[i]!=0){
     rand.par <- output.par.pro[sample(nrow(output.par.pro),size=pro.list[i],replace=FALSE),(2*i-1):(2*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2")
     rand.par$Dataset <- i
     rand.par$Model <- "Probit"
@@ -601,11 +604,12 @@ for (i in 1:length(pro.list)) {
 }
 sum(mod.summary$pro.weight)
 
-wei.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+wei.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(wei.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(wei.list)) {
   if (wei.list[i]!=0){
     rand.par <- output.par.wei[sample(nrow(output.par.wei),size=wei.list[i],replace=FALSE),(3*i-2):(3*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2","Par3")
     rand.par$Dataset <- i
     rand.par$Model <- "Weibull"
@@ -616,11 +620,12 @@ for (i in 1:length(wei.list)) {
 }
 sum(mod.summary$wei.weight)
 
-ms2.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+ms2.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(ms2.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(ms2.list)) {
   if (ms2.list[i]!=0){
     rand.par <- output.par.ms2[sample(nrow(output.par.ms2),size=ms2.list[i],replace=FALSE),(3*i-2):(3*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2","Par3")
     rand.par$Dataset <- i
     rand.par$Model <- "Multistage2"
@@ -631,11 +636,12 @@ for (i in 1:length(ms2.list)) {
 }
 sum(mod.summary$ms2.weight)
 
-llog.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+llog.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(llog.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(llog.list)) {
   if (llog.list[i]!=0){
     rand.par <- output.par.llog[sample(nrow(output.par.llog),size=llog.list[i],replace=FALSE),(3*i-2):(3*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2","Par3")
     rand.par$Dataset <- i
     rand.par$Model <- "LogLogistic"
@@ -646,11 +652,12 @@ for (i in 1:length(llog.list)) {
 }
 sum(mod.summary$llog.weight)
 
-lpro.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+lpro.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(lpro.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(lpro.list)) {
   if (lpro.list[i]!=0){
     rand.par <- output.par.lpro[sample(nrow(output.par.lpro),size=lpro.list[i],replace=FALSE),(3*i-2):(3*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2","Par3")
     rand.par$Dataset <- i
     rand.par$Model <- "LogProbit"
@@ -661,11 +668,12 @@ for (i in 1:length(lpro.list)) {
 }
 sum(mod.summary$lpro.weight)
 
-dh.parms <- data.frame(row.names=c("Dataset","Model","Par1","Par2","Par3","Par4"))
+dh.parms <- as.data.frame(matrix(NA,nrow=0,ncol=6))
+colnames(dh.parms) <- c("Dataset","Model","Par1","Par2","Par3","Par4")
 for (i in 1:length(dh.list)) {
   if (dh.list[i]!=0){
     rand.par <- output.par.dh[sample(nrow(output.par.dh),size=dh.list[i],replace=FALSE),(4*i-3):(4*i)]
-    as.data.frame(rand.par)
+    rand.par <- as.data.frame(rand.par)
     colnames(rand.par) <- c("Par1","Par2","Par3","Par4")
     rand.par$Dataset <- i
     rand.par$Model <- "DichHill"
@@ -673,9 +681,14 @@ for (i in 1:length(dh.list)) {
   }
   else next
 }
+sum(mod.summary$dh.weight)
+
 colSums(mod.summary)
 rowSums(mod.summary)
 total.data <- rbind(ql.parms,log.parms,pro.parms,wei.parms,ms2.parms,llog.parms,lpro.parms,dh.parms)
-total.data <- total.data[c(3,4,1,2,5,6)]
+total.data <- total.data[c("Dataset","Model","Par1","Par2","Par3","Par4")]
 
+```
+
+```{r }
 ```
