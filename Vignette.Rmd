@@ -173,38 +173,38 @@ for (s in 1:num.study){
   mcmc_warmup.dh = mcmc_iter.dh - mcmc_output_len   
   fit_dh = stan(model_code=dh_model,data=data_dh,iter=mcmc_iter.dh,warmup=mcmc_warmup.dh,chains=mcmc_chain_num,seed=mcmc_seed)
   
-  ql_a<-as.array(fit_ql)[1:mcmc_output_len]
-  ql_b<-as.array(fit_ql)[(mcmc_output_len+1):(mcmc_output_len*2)] 
+  ql_a<-extract(fit_ql)[[1]]
+  ql_b<-extract(fit_ql)[[2]]
   
-  log_a<-as.array(fit_log)[1:mcmc_output_len]
-  log_b<-as.array(fit_log)[(mcmc_output_len+1):(mcmc_output_len*2)]
+  log_a<-extract(fit_log)[[1]]
+  log_b<-extract(fit_log)[[2]]
   
-  pro_a<-as.array(fit_pro)[1:mcmc_output_len]
-  pro_b<-as.array(fit_pro)[(mcmc_output_len+1):(mcmc_output_len*2)] 
+  pro_a<-extract(fit_pro)[[1]]
+  pro_b<-extract(fit_pro)[[2]]
   
-  wei_a<-as.array(fit_wei)[1:mcmc_output_len]
-  wei_b<-as.array(fit_wei)[(mcmc_output_len+1):(mcmc_output_len*2)] 
-  wei_c<-as.array(fit_wei)[(mcmc_output_len*2+1):(mcmc_output_len*3)] 
+  wei_a<-extract(fit_wei)[[1]]
+  wei_b<-extract(fit_wei)[[2]]
+  wei_c<-extract(fit_wei)[[3]]
   
-  ms2_a<-as.array(fit_ms2)[1:mcmc_output_len]
-  ms2_b<-as.array(fit_ms2)[(mcmc_output_len+1):(mcmc_output_len*2)] 
-  ms2_c<-as.array(fit_ms2)[(mcmc_output_len*2+1):(mcmc_output_len*3)] 
+  ms2_a<-extract(fit_ms2)[[1]]
+  ms2_b<-extract(fit_ms2)[[2]]
+  ms2_c<-extract(fit_ms2)[[3]]
   
-  llog_a<-as.array(fit_llog)[1:mcmc_output_len]
-  llog_b<-as.array(fit_llog)[(mcmc_output_len+1):(mcmc_output_len*2)] 
-  llog_c<-as.array(fit_llog)[(mcmc_output_len*2+1):(mcmc_output_len*3)] 
+  llog_a<-extract(fit_llog)[[1]]
+  llog_b<-extract(fit_llog)[[2]]
+  llog_c<-extract(fit_llog)[[3]]
   
-  lpro_a<-as.array(fit_lpro)[1:mcmc_output_len]
-  lpro_b<-as.array(fit_lpro)[(mcmc_output_len+1):(mcmc_output_len*2)] 
-  lpro_c<-as.array(fit_lpro)[(mcmc_output_len*2+1):(mcmc_output_len*3)] 
+  lpro_a<-extract(fit_lpro)[[1]]
+  lpro_b<-extract(fit_lpro)[[2]]
+  lpro_c<-extract(fit_lpro)[[3]]
   
-  dh_a<-as.array(fit_dh)[1:mcmc_output_len]
-  dh_b<-as.array(fit_dh)[(mcmc_output_len+1):(mcmc_output_len*2)] 
-  dh_c<-as.array(fit_dh)[(mcmc_output_len*2+1):(mcmc_output_len*3)] 
-  dh_g<-as.array(fit_dh)[(mcmc_output_len*3+1):(mcmc_output_len*4)] 
+  dh_a<-extract(fit_dh)[[1]]
+  dh_b<-extract(fit_dh)[[2]]
+  dh_c<-extract(fit_dh)[[3]]
+  dh_g<-extract(fit_dh)[[4]]
   
   ## put the MCMC sample in output matrix ##
-  mcmcsample.out.index<-(mcmc_output_len-length.mcmc.sample+1):mcmc_output_len
+  mcmcsample.out.index<-(mcmc_output_len*mcmc_chain_num-length.mcmc.sample+1):(mcmc_output_len*mcmc_chain_num)
   output.par.ql[,(s-1)*2+1]<-ql_a[mcmcsample.out.index]
   output.par.ql[,(s-1)*2+2]<-ql_b[mcmcsample.out.index]
   output.par.log[,(s-1)*2+1]<-log_a[mcmcsample.out.index]
