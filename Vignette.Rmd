@@ -9,8 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(viridisLite)
 library(data.table)
-source(file.path("functions","Stan_models.R"))
-source(file.path("functions","BMD_functions.R"))
+library(lsr)
+library(scales)
+functionfolder <- "functions"
+source(file.path(functionfolder,"Stan_models.R"))
+source(file.path(functionfolder,"Pop_incidence_functions.R"))
+source(file.path(functionfolder,"BMD_functions.R"))
+source(file.path(functionfolder,"HDMI_functions.R"))
+source(file.path(functionfolder,"Extra_risk_functions.R"))
+source(file.path(functionfolder,"RSD_functions.R"))
+
 
 ```
 
@@ -22,7 +30,7 @@ options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 ############# 4. Data loading, output preparation, and parameter settings ###############
 # Load data sets
-datasets_dich<-read.csv("ExampleData.csv",header=TRUE)
+datasets_dich<-read.csv("ExampleBioassayData.csv",header=TRUE)
 study.index<-unique(datasets_dich[,1])
 num.study<-length(study.index)
 study.index.all<-datasets_dich[,1]
@@ -725,6 +733,7 @@ plot.df <- data.table(Dose=resp.q50$dose,`50%`=resp.q50$resp,
                      `5%`=resp.q05$resp,`95%`=resp.q95$resp)
 
 ma.bmdl <- output.mtx[s,"MA-ext10L"]
+
 bmr.approx <- approx(plot.df$Dose,plot.df$`95%`,xout=ma.bmdl)[2][[1]]
   
 quan.plot <- ggplot(plot.df,aes(x=Dose,y=`50%`)) + 
@@ -744,12 +753,101 @@ print(quan.plot)
 
 
 ```{r RSD}
+BW_data<-read.csv("ExampleBWdata.csv",header=TRUE)
 
+n.samp <- 2000
+n.pop <- 1e4
+risklevel <- 1e-6
+RSD.df <- data.frame()
+RSD.samps.df <- data.frame()
+datasetnum <- s
+samp.parms <- subset(modelparms,Dataset==datasetnum)[,-1] # Remove first column which is dataset #
+bw.a <- subset(BW_data,Index==datasetnum)$bw.a[1]
+bw.h <- 70
+bbmd.hed <- ma.bmdl*(bw.a/bw.h)^0.25 # Default HED
 
+## Uncertainty samples
+set.seed(3.14159)
+uncertainty.samples <- get.uncertainty.samples(samp.parms,
+                                               bw.a = bw.a, # Animal Body Weight
+                                                   bw.h = bw.h,
+                                                   n.samp=n.samp)
+## Get RSD samples
+t1 <- Sys.time()
+RSD.samples <- calc.RSD.samples(pop.incidence = risklevel, # For RSD at 1e-6
+                                    dose.max = dose.max, # For dose scaling 
+                                    bmdu10 = output.mtx[datasetnum,"MA-ext10U"],
+                                    uncertainty.samples, # One uncertainty sample
+                                    n.pop=n.pop)
+print(Sys.time()-t1)
+RSD.samps.df <- rbind(RSD.samps.df,
+                      cbind(data.frame(Dataset=datasetnum,as.data.frame(t(RSD.samples)))))
+# Get quantiles
+RSD.quants <- log10(quantile(RSD.samples,prob=seq(0.01,0.99,0.01),na.rm=TRUE))
+RSD.df <- rbind(RSD.df,cbind(data.frame(Dataset=datasetnum,as.data.frame(t(RSD.quants)))))
+
+rsd.06 <- RSD.quants["5%"]
+
+  Dose.vec <- 10^seq(rsd.06,3,0.5)
+  NormDose.vec <- Dose.vec/dose.max
+  pop.incidence.df <- get.pop.incidence(NormDose.vec,
+                                        uncertainty.samples,
+                                        n.pop = 1e4,
+                                        prob = c(0.025,0.05,0.1,0.25,0.5,0.75,0.9,0.95,0.975))
+  pop.incidence.df$OrigDose <- pop.incidence.df$Dose * dose.max
+  
+
+  
+    # Figure 5D
+  rsd.plot <- ggplot(pop.incidence.df,aes(x=OrigDose,y=`50%`)) +
+    geom_ribbon(aes(ymin=`5%`,ymax=`95%`),fill="#7AD151FF") + # 90% CI of population incidence
+    geom_line() +  # Median population incidence
+    geom_point(aes(x=bbmd.hed,y=0.1),size=3) + # BBMD - HED
+    geom_segment(aes(x = bbmd.hed*1e-5,xend = bbmd.hed,
+                     y = 1e-6,yend = 0.1),linetype="dashed") +
+    geom_point(aes(x=10^rsd.06,y=1e-6),shape=18,size=3) +
+    scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
+    scale_y_log10(breaks=10^(-6:-1),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + theme_classic() +
+    coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
+    xlab("Dose (mg/kg-d)") + ylab("Population Risk") + annotation_logticks(sides="b") +
+    theme(legend.position="none",panel.border = element_rect(colour = "black",fill=NA))
+
+  print(rsd.plot)
 ```
 
 
 ```{r HDMI}
 
+  hdmi.med.plot.df <- subset(hdmi.df,Incidence==0.5&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=50%
 
+
+  p2 <- ggplot(hdmi.med.plot.df) + 
+    geom_line(aes(x=`X50.`,y=indivrisk)) +
+    geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#541352FF",alpha=0.5) +
+    scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
+    scale_y_log10(breaks=10^(-6:-1),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + theme_classic() +
+    coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
+    geom_point(aes(x=bbmd.hed,y=0.1),size=3) + 
+    geom_segment(aes(x = bbmd.hed*1e-5,xend = bbmd.hed, # Old x=bbmd.hed
+                     y = 1e-6,yend = 0.1),linetype="dashed") + 
+    ylab("Individual Risk (I = 50%)") + annotation_logticks(sides="b") +
+    theme(axis.title.x=element_blank(),
+          panel.border = element_rect(colour = "black",fill=NA))
+
+  # Figure 5C
+  hdmi.01.plot.df <- subset(hdmi.df,Incidence==0.01&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=1%
+
+  p3 <- ggplot(hdmi.01.plot.df) + 
+    geom_line(aes(x=`X50.`,y=indivrisk)) +
+    geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#2A788EFF",alpha=0.5) +
+    scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
+    scale_y_log10(breaks=10^(-6:-1),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + theme_classic() +
+    coord_cartesian(xlim=c(min(pop.incidence.df$OrigDose),max(pop.incidence.df$OrigDose)),ylim=c(1e-6,0.1))+
+    geom_point(aes(x=bbmd.hed,y=0.1),size=3) + # BBMD - HED
+    geom_segment(aes(x = bbmd.hed*1e-5,xend = bbmd.hed,
+                     y = 1e-6,yend = 0.1),linetype="dashed") + 
+    ylab("Individual Risk (I = 1%)") + annotation_logticks(sides="b") +
+    theme(axis.title.x=element_blank(),
+          panel.border = element_rect(colour = "black",fill=NA))
+  
 ```
