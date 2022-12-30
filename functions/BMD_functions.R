@@ -128,6 +128,32 @@ bmd.func <- function(bmr,parms,modelname) {
   return(bmd)
 }
 
+#Combined
+
+resp.func <- function(dose,parms,modelname) {
+  if (modelname == "Quantal-Linear") {
+    resp <- get.resp.ql(parms[1],parms[2],dose)
+  } else if (modelname == "Logistic") {
+    resp <- get.resp.log(parms[1],parms[2],dose)
+  } else if (modelname == "Probit") {
+    resp <- get.resp.pro(parms[1],parms[2],dose)
+  } else if (modelname == "Weibull") {
+    resp <- get.resp.wei(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "Multistage2") {
+    resp <- get.resp.ms2(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "LogLogistic") {
+    resp <- get.resp.llog(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "LogProbit") {
+    resp <- get.resp.lpro(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "DichHill") {
+    resp <- get.resp.dh(parms[1],parms[2],parms[3],parms[4],dose)
+  } else {
+    resp <- rep(NA,length(dose))
+  }
+  return(resp)
+}
+
+
 ############### 3. Other functions and constants ###############
 zeroish<-1e-8  # Globle Variable
 

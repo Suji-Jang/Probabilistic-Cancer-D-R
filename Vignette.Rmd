@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(viridisLite)
+library(data.table)
 source(file.path("functions","Stan_models.R"))
 source(file.path("functions","BMD_functions.R"))
 
@@ -542,7 +544,7 @@ colnames(output.mtx)<-cname1
 mod.summary <- as.data.frame(output.mtx)[,c("ql-weight","log-weight","pro-weight","wei-weight","ms2-weight",
                               "llog-weight","lpro-weight","dh-weight")]
 names(mod.summary) <- gsub("-","\\.",names(mod.summary))
-mod.summary <- round(mod.summary * 1000, digits=0)
+mod.summary <- round(mod.summary * length.mcmc.sample, digits=0)
  
 ql.list <- mod.summary$ql.weight
 log.list <- mod.summary$log.weight
@@ -685,10 +687,69 @@ sum(mod.summary$dh.weight)
 
 colSums(mod.summary)
 rowSums(mod.summary)
-total.data <- rbind(ql.parms,log.parms,pro.parms,wei.parms,ms2.parms,llog.parms,lpro.parms,dh.parms)
-total.data <- total.data[c("Dataset","Model","Par1","Par2","Par3","Par4")]
+models.and.parms <- rbind(ql.parms,log.parms,pro.parms,wei.parms,ms2.parms,llog.parms,lpro.parms,dh.parms)
+models.and.parms <- models.and.parms[c("Dataset","Model","Par1","Par2","Par3","Par4")]
 
 ```
 
-```{r }
+```{r individual fits}
+# models.and.parms
+# output.mtx
+# datasets_dich
+s<-1 # Dataset number
+act.data <- subset(datasets_dich,Study_Index==s)
+act.data$Response <- act.data$Effect/act.data$Number
+dose.max<-max(act.data$Dose)
+modelparms <- subset(models.and.parms,Dataset==s)
+modelparms$Model <- factor(modelparms$Model)
+
+allfits <- data.frame()
+normdose <- seq(0,1,0.02)
+for (j in 1:length.mcmc.sample) {
+  parms <- as.numeric(modelparms[j,c("Par1","Par2","Par3","Par4")])
+  y <- resp.func(normdose,parms,modelparms[j,"Model"])
+  tmp <- data.frame(dose=normdose*dose.max,resp=y,Model=modelparms[j,"Model"],indx=j)
+  allfits <- rbind(allfits,tmp)
+}
+ind.plot<-
+  ggplot()+geom_line(aes(x=dose,y=resp,color=Model,group=indx),data=allfits)+
+  scale_color_viridis_d(option="turbo",alpha=0.25)+
+  geom_point(data=act.data,aes(x=Dose,y=Effect/Number))+
+  xlab("Dose (mg/kg-d)")+ylab("Incidence")
+print(ind.plot)
+
+resp.q05 <- aggregate(resp ~ dose,allfits,FUN=quantile,prob=0.05)
+resp.q50 <- aggregate(resp ~ dose,allfits,FUN=quantile,prob=0.5)
+resp.q95 <- aggregate(resp ~ dose,allfits,FUN=quantile,prob=0.95)
+plot.df <- data.table(Dose=resp.q50$dose,`50%`=resp.q50$resp,
+                     `5%`=resp.q05$resp,`95%`=resp.q95$resp)
+
+ma.bmdl <- output.mtx[s,"MA-ext10L"]
+bmr.approx <- approx(plot.df$Dose,plot.df$`95%`,xout=ma.bmdl)[2][[1]]
+  
+quan.plot <- ggplot(plot.df,aes(x=Dose,y=`50%`)) + 
+    geom_ribbon(aes(ymin=`5%`,ymax=`95%`),fill="#FDE725FF") +
+    geom_line() + #scale_x_continuous(expand=c(0,0)) + 
+    #scale_y_continuous(expand=c(0,0),limits=c(0,1),breaks=seq(0,1,by=0.2)) + 
+    geom_point(data=act.data,aes(x=Dose,y=Response)) +
+    geom_point(aes(x=ma.bmdl,y=bmr.approx),shape=2,size=3) +
+    geom_segment(aes(x=-Inf,y=bmr.approx,xend=ma.bmdl,yend=bmr.approx),linetype="dotted") +
+    geom_segment(aes(x=ma.bmdl,y=-Inf,xend=ma.bmdl,yend=bmr.approx),linetype="dotted") +
+    theme_classic() + ylab("Incidence") +
+    theme(axis.title.x=element_blank(),
+          panel.border = element_rect(colour = "black",fill=NA))
+
+print(quan.plot)
+```
+
+
+```{r RSD}
+
+
+```
+
+
+```{r HDMI}
+
+
 ```
