@@ -74,7 +74,7 @@ rstrct = 1  #restrict value
 
 ```
 
-## Run MCMC
+## Run MCMC and check convergence
 
 ```{r run stan, echo=FALSE, include=FALSE}
 for (s in 1:num.study){
@@ -546,7 +546,6 @@ colnames(output.mtx)<-cname1
 
 ```
 
-## Check convergence
 
 ```{r convergence}
 
@@ -719,7 +718,7 @@ models.and.parms <- models.and.parms[c("Dataset","Model","Par1","Par2","Par3","P
 
 First plot 1000 posterior samples, weighted by model weight.
 
-Then plot overall model averaging confidence interval, along with BMD value at 10% extra risk.
+Then plot overall model averaging confidence interval, along with BMDL value at 10% extra risk.
 
 ```{r individual fits, warning=FALSE,message=FALSE}
 # models.and.parms
