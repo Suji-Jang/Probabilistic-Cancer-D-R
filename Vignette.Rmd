@@ -547,7 +547,20 @@ colnames(output.mtx)<-cname1
 ```
 
 
-```{r extract weighted samples}
+```{r convergence}
+
+monitor(extract(fit_ql, permuted = FALSE, inc_warmup = TRUE))
+monitor(extract(fit_log, permuted = FALSE, inc_warmup = TRUE))
+monitor(extract(fit_pro, permuted = FALSE, inc_warmup = TRUE))
+monitor(extract(fit_wei, permuted = FALSE, inc_warmup = TRUE))
+monitor(extract(fit_ms2, permuted = FALSE, inc_warmup = TRUE))
+monitor(extract(fit_llog, permuted = FALSE, inc_warmup = TRUE))
+monitor(extract(fit_lpro, permuted = FALSE, inc_warmup = TRUE))
+monitor(extract(fit_dh, permuted = FALSE, inc_warmup = TRUE))
+
+```
+
+```{r extract weighted samples, warning=FALSE,message=FALSE}
 
 mod.summary <- as.data.frame(output.mtx)[,c("ql-weight","log-weight","pro-weight","wei-weight","ms2-weight",
                               "llog-weight","lpro-weight","dh-weight")]
@@ -700,7 +713,7 @@ models.and.parms <- models.and.parms[c("Dataset","Model","Par1","Par2","Par3","P
 
 ```
 
-```{r individual fits}
+```{r individual fits, warning=FALSE,message=FALSE}
 # models.and.parms
 # output.mtx
 # datasets_dich
@@ -752,7 +765,7 @@ print(quan.plot)
 ```
 
 
-```{r RSD}
+```{r RSD, warning=FALSE,message=FALSE}
 BW_data<-read.csv("ExampleBWdata.csv",header=TRUE)
 
 n.samp <- 2000
@@ -816,12 +829,27 @@ rsd.06 <- RSD.quants["5%"]
 ```
 
 
-```{r HDMI}
+```{r HDMI, warning=FALSE,message=FALSE}
 
-  hdmi.med.plot.df <- subset(hdmi.df,Incidence==0.5&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=50%
+I.vec <- c(10^seq(-6,-2,0.1),seq(0.02,0.99,0.01))
+# BMR = individual risk from 1e-6 to 0.1
+bmr.vec <- 10^seq(-6,-1)
 
+hdmi.df <- data.frame()
+# Individual risk of 1e-6, 1e-5... 0.1
+for (indivrisk in bmr.vec) {
+  hdmi.tmp.df <- get.indivrisk.incidence(indivrisk,
+                                     I.vec,
+                                     uncertainty.samples,
+                                     prob = c(0.05,0.5,0.95),
+                                     dose.max = dose.max)
+  hdmi.tmp.df$Index <- datasetnum
+  hdmi.df <- rbind(hdmi.df,hdmi.tmp.df)
+}
 
-  p2 <- ggplot(hdmi.med.plot.df) + 
+hdmi.med.plot.df <- subset(hdmi.df,Incidence==0.5&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=50%
+
+hdmi.med.plot <- ggplot(hdmi.med.plot.df) + 
     geom_line(aes(x=`X50.`,y=indivrisk)) +
     geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#541352FF",alpha=0.5) +
     scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
@@ -833,11 +861,11 @@ rsd.06 <- RSD.quants["5%"]
     ylab("Individual Risk (I = 50%)") + annotation_logticks(sides="b") +
     theme(axis.title.x=element_blank(),
           panel.border = element_rect(colour = "black",fill=NA))
+print(hdmi.med.plot)
 
-  # Figure 5C
-  hdmi.01.plot.df <- subset(hdmi.df,Incidence==0.01&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=1%
+hdmi.01.plot.df <- subset(hdmi.df,Incidence==0.01&Index==s)[,c("indivrisk","Incidence","X5.","X50.","X95.")] # Extracting I=1%
 
-  p3 <- ggplot(hdmi.01.plot.df) + 
+hdmi.01.plot <- ggplot(hdmi.01.plot.df) + 
     geom_line(aes(x=`X50.`,y=indivrisk)) +
     geom_ribbon(aes(xmin=`X5.`,xmax=`X95.`,y=indivrisk),fill="#2A788EFF",alpha=0.5) +
     scale_x_log10(breaks=10^(-10:2),labels=trans_format("log10",math_format(10^.x)),expand=c(0,0)) + 
@@ -849,5 +877,6 @@ rsd.06 <- RSD.quants["5%"]
     ylab("Individual Risk (I = 1%)") + annotation_logticks(sides="b") +
     theme(axis.title.x=element_blank(),
           panel.border = element_rect(colour = "black",fill=NA))
-  
+
+print(hdmi.01.plot)
 ```
