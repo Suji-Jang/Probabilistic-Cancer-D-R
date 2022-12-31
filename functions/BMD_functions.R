@@ -50,10 +50,19 @@ get.resp.ms2<-function(a,b,c,dose){
 }
 
 get.bmd.ms2.extra<-function(a,b,c,bmr){
-  if (c==0){
-    bmd<-log(1-bmr)/(-b)
+  if (length(c)==1) {
+    if (c==0){
+      bmd<-log(1-bmr)/(-b)
+    } else {
+      bmd<-(-b+sqrt(b^2-4*c*log(1-bmr)))/(2*c)   
+    }
   } else {
-    bmd<-(-b+sqrt(b^2-4*c*log(1-bmr)))/(2*c)   
+    bmd <- c*0
+    ciszero <- c == 0
+    bmd[ciszero] <- log(1-bmr)/(-b[ciszero])
+    bmd[!ciszero] <- 
+      (-b[!ciszero]+sqrt(b[!ciszero]^2-4*c[!ciszero]*log(1-bmr)))/
+      (2*c[!ciszero])
   }
   return(bmd)
 }
@@ -118,4 +127,59 @@ bmd.func <- function(bmr,parms,modelname) {
   }
   return(bmd)
 }
+
+#Combined
+
+resp.func <- function(dose,parms,modelname) {
+  if (modelname == "Quantal-Linear") {
+    resp <- get.resp.ql(parms[1],parms[2],dose)
+  } else if (modelname == "Logistic") {
+    resp <- get.resp.log(parms[1],parms[2],dose)
+  } else if (modelname == "Probit") {
+    resp <- get.resp.pro(parms[1],parms[2],dose)
+  } else if (modelname == "Weibull") {
+    resp <- get.resp.wei(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "Multistage2") {
+    resp <- get.resp.ms2(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "LogLogistic") {
+    resp <- get.resp.llog(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "LogProbit") {
+    resp <- get.resp.lpro(parms[1],parms[2],parms[3],dose)
+  } else if (modelname == "DichHill") {
+    resp <- get.resp.dh(parms[1],parms[2],parms[3],parms[4],dose)
+  } else {
+    resp <- rep(NA,length(dose))
+  }
+  return(resp)
+}
+
+
+############### 3. Other functions and constants ###############
+zeroish<-1e-8  # Globle Variable
+
+get.likelihood.dich<-function(pp,yy,nn){
+  pp[pp==0]<-zeroish
+  pp[pp==1]<-1-zeroish
+  out<-sum(yy*log(pp)+(nn-yy)*log(1-pp))
+  return(out)
+}
+
+get.para.stats<-function(x){
+  out<-rep(NA,5)
+  out[1]<-mean(x,na.rm = TRUE)
+  out[2]<-sd(x,na.rm = TRUE)
+  out[3]<-quantile(x,0.025,na.rm = TRUE)
+  out[4]<-quantile(x,0.5,na.rm = TRUE)
+  out[5]<-quantile(x,0.975,na.rm = TRUE)
+  return(out)
+}
+
+get.BMD.stats<-function(x){
+  out<-rep(NA,3)
+  out[1]<-quantile(x,0.5,na.rm = TRUE)    #BMD
+  out[2]<-quantile(x,0.05,na.rm = TRUE)   #BMDL
+  out[3]<-quantile(x,0.95,na.rm = TRUE)   #BMDU
+  return(out)
+}
+############# End of other functions and constants ##############
 
