@@ -546,6 +546,7 @@ colnames(output.mtx)<-cname1
 
 ```
 
+## Check convergence
 
 ```{r convergence}
 
@@ -559,6 +560,7 @@ monitor(extract(fit_lpro, permuted = FALSE, inc_warmup = TRUE))
 monitor(extract(fit_dh, permuted = FALSE, inc_warmup = TRUE))
 
 ```
+## Extract weighted samples from posterior distributions
 
 ```{r extract weighted samples, warning=FALSE,message=FALSE}
 
@@ -713,6 +715,12 @@ models.and.parms <- models.and.parms[c("Dataset","Model","Par1","Par2","Par3","P
 
 ```
 
+## Plot Bayesian Benchmark Dose Model Fit
+
+First plot 1000 posterior samples, weighted by model weight.
+
+Then plot overall model averaging confidence interval, along with BMD value at 10% extra risk.
+
 ```{r individual fits, warning=FALSE,message=FALSE}
 # models.and.parms
 # output.mtx
@@ -764,6 +772,13 @@ quan.plot <- ggplot(plot.df,aes(x=Dose,y=`50%`)) +
 print(quan.plot)
 ```
 
+## Calculate and plot risk-specific dose for population risk
+
+Population risk is the population incidence calculated by averaging over individual risks at a given dose. Individual risks are calculated using the WHO/IPCS default uncertainty distributions for inter-species extrapolation and human variability.
+
+Posterior median (solid line) and 90% CI (band) are shown.
+
+Also shown is the "default linear extrapolation" approach (dashed line) using the model averaged BMDL, converted to human equivalent dose using BW^(3/4) scaling, and then linearly extrapolated.
 
 ```{r RSD, warning=FALSE,message=FALSE}
 BW_data<-read.csv("ExampleBWdata.csv",header=TRUE)
@@ -828,6 +843,15 @@ rsd.06 <- RSD.quants["5%"]
   print(rsd.plot)
 ```
 
+## Calculate and plot individual risk
+
+First plot individual risk for median individual.
+
+Then plot individual risk for 1% most sensitive individual.
+
+Posterior median (solid line) and 90% CI (band) are shown.
+
+Also shown is the "default linear extrapolation" approach (dashed line).
 
 ```{r HDMI, warning=FALSE,message=FALSE}
 
@@ -880,3 +904,4 @@ hdmi.01.plot <- ggplot(hdmi.01.plot.df) +
 
 print(hdmi.01.plot)
 ```
+
