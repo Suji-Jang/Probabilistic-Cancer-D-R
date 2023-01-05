@@ -149,7 +149,7 @@ for (s in 1:length(study.index)){
   plot <- ggarrange(p1,p2,p3,p4,ncol=1)
   annotate_figure(plot,top=text_grob(chem.name[s,"Chemical.Name"], face="bold")) #size=9?
   
-  sumfigfolder <- "figures/sumfigs2"
+  sumfigfolder <- "figures/fig5"
   ggsave(file.path(sumfigfolder,paste("Index",s,"_120122.pdf")),width=4,height=12)
   
 }
