@@ -76,7 +76,6 @@ heatmap.df$BBMD.BMDS.Ratio <- scale(BBMD.BMDS.Ratio)
 heatmap.df$BMD.CI.Ratio <- scale(BMD.CI.Ratio)
 heatmap.df$Prob.Linear.Ratio <- scale(Prob.Linear.Ratio)
 heatmap.df$RSD.CI.Ratio <- scale(RSD.CI.Ratio)
-a <- clusGap(heatmap.df,FUN=kmeans,K.max=)
 
 mypalette <- rev(colorRampPalette(brewer.pal(9, "RdBu"))(100))
 
