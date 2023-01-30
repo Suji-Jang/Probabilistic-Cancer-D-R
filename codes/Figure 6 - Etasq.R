@@ -19,9 +19,11 @@ RSD.etasq.df$var_max <- factor(RSD.etasq.df$var_max,
                                levels=c("BMD Model","BMD Parameters","DAF","AHU","sigmaH"))
 RSD.etasq.df$RSD.log10ci90.bin <- cut(RSD.etasq.df$RSD.log10ci90,breaks=seq(1,8))
 
-pdf(file.path(figuresfolder,"Eta-squared - Resized(6,4).pdf"),width=6,height=4)
+pdf(file.path(figuresfolder,"Figure 6 - Eta-squared - Resized.pdf"),width=6,height=3)
 print(ggplot(RSD.etasq.df,aes(x=RSD.log10ci90.bin,fill=var_max))+geom_bar()+
-        xlab("90% Uncertainty Width (log10 units)")+ylab("Number of chemicals")+theme_classic()+
+        xlab("90% Uncertainty Width (log10 units)")+ylab("Number of Datasets")+theme_classic()+
         scale_fill_viridis_d("Largest contribution\nto uncertainty",
-                             direction=-1,begin=0.2,drop=FALSE))
+                             direction=-1,begin=0.2,drop=FALSE,breaks=levels(RSD.etasq.df$var_max),
+                             labels=c("BMD Model","BMD Parameters","DAF",expression(UF[A]),expression(sigma[H]))) +
+        theme(legend.text.align=0))
 dev.off()
