@@ -132,7 +132,7 @@ p1 <- ggplot(hd.pop.inc.df.plot) +
   geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#440154FF",alpha=0.2)+
   scale_y_log10(breaks=10^(-6:1),labels=trans_format("log10",math_format(10^.x))) + 
   coord_cartesian(ylim=c(5e-7,max(hd.pop.inc.df.plot$`95%`))) +
-  ylab("Population Incidence") + labs(tag="A") +
+  ylab(bquote("Population Incidence at "*HD["01"]^"01")) + labs(tag="A") +
   scale_color_viridis(discrete=TRUE,direction=-1) + theme_classic() +
   theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank(),
         panel.border = element_rect(colour = "black",fill=NA),
@@ -144,7 +144,7 @@ p4 <- ggplot(hd.pop.inc.1e4.df.plot) +
   geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#365D8DFF",alpha=0.2)+
   scale_y_log10(breaks=10^(-6:1),labels=trans_format("log10",math_format(10^.x))) + 
   coord_cartesian(ylim=c(5e-7,max(hd.pop.inc.df.plot$`95%`))) +
-  ylab("Population Incidence") + labs(tag="D") +
+  ylab(bquote("Population Incidence at "*HD["1e-4"]^"01")) + labs(tag="D") +
   scale_color_viridis(discrete=TRUE,direction=-1) + theme_classic() +
   theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank(),
         panel.border = element_rect(colour = "black",fill=NA),
@@ -156,7 +156,7 @@ p7 <- ggplot(hd.pop.inc.1e6.df.plot) +
   geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#27AD81FF",alpha=0.2)+
   scale_y_log10(breaks=10^(-6:1),labels=trans_format("log10",math_format(10^.x))) + 
   coord_cartesian(ylim=c(5e-7,max(hd.pop.inc.df.plot$`95%`))) +
-  ylab("Population Incidence") + labs(tag="G") +
+  ylab(bquote("Population Incidence at "*HD["1e-6"]^"01")) + labs(tag="G") +
   scale_color_viridis(discrete=TRUE,direction=-1) + theme_classic() +
   theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank(),
         panel.border = element_rect(colour = "black",fill=NA),
@@ -243,6 +243,6 @@ p9 <- ggplot(prob.rfd.rsd,aes(x=HDMI.1E6.RSD6)) + geom_histogram(fill="#27AD81FF
         ggh4x.axis.ticks.length.minor = rel(1))
 
 ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9) 
-ggsave(file.path(figuresfolder,"Figure 4 - HDMI_100722.pdf"),width=10,height=10)
+ggsave(file.path(figuresfolder,"Figure 4 - HDMI_013023.pdf"),width=10,height=10)
 
 
