@@ -49,7 +49,7 @@ p1 <- ggplot(rsd6.points.df) +
         panel.border = element_rect(colour = "black",fill=NA), 
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.1, 0.95))
 
-hist.RSD6.df <- data.frame(Index=1:nrow(rsd6.df),Fit.RSD6=rsd6.df[,"Prob.5"],MA.RSD6=ma.df[,"RSD.06.L"],
+hist.RSD6.df <- data.frame(Index=1:nrow(rsd6.df),Fit.RSD6=rsd6.df[,"Prob.5"],MA.RSD6=rsd6.df[,"MA.RSD6"],
                            BMDS.RSD6=rsd6.df[,"BMDS.RSD6"])
 colnames(hist.RSD6.df) <- c("Index","Fit.RSD6","MA.RSD6","BMDS.RSD6")
 hist.RSD6.df$MA.Prob <- hist.RSD6.df$MA.RSD6/hist.RSD6.df$Fit.RSD6
