@@ -41,15 +41,6 @@ casenum.all<-datasets_dich[,4]
 # Prepare Output Matrix #
 output.mtx<-matrix(NA,num.study,70)
 
-#output.mtx.ql<-matrix(NA,num.study,35)
-#output.mtx.log<-matrix(NA,num.study,35)
-#output.mtx.pro<-matrix(NA,num.study,35)
-#output.mtx.wei<-matrix(NA,num.study,43)
-#output.mtx.ms2<-matrix(NA,num.study,43)
-#output.mtx.llog<-matrix(NA,num.study,43)
-#output.mtx.lpro<-matrix(NA,num.study,43)
-#output.mtx.dh<-matrix(NA,num.study,51)
-
 length.mcmc.sample<-1000  # This value determines how many posterior samples to be printed in output files
 # This value cannot exceed mcmc_iter_unit - mcmc_output_len, i.e., 15000 in this default setting
 
