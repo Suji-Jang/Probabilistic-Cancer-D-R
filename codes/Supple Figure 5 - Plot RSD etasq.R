@@ -6,7 +6,7 @@ library(tidyr)
 figuresfolder <- "figures"
 resultsfolder <- "results"
 
-pdf(file.path(figuresfolder,"Supple Figure - RSD Eta-squared.pdf"))
+pdf(file.path(figuresfolder,"Supple Figure 5 - RSD Eta-squared.pdf"))
 for (k in 1:3) {
   if (k==1) {
     risklevel <- 1e-4
@@ -18,7 +18,7 @@ for (k in 1:3) {
     risklevel <- 1e-6
     RSD.label <- "RSD06"
   }
-  RSD.etasq.df<-fread(file.path(resultsfolder,paste0(RSD.label,".etasq.csv")))
+  RSD.etasq.df<-fread(file.path(resultsfolder,paste0(RSD.label,"_etasq.csv")))
   names(RSD.etasq.df)[7]<-"BMD Model"
   names(RSD.etasq.df)[11]<-"BMD Parameters"
   print(ggpairs(RSD.etasq.df[,c(5,7:11)])+ggtitle(RSD.label)+theme_bw())

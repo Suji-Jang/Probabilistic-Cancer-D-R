@@ -13,9 +13,10 @@ source(file.path(functionfolder,"Extra_risk_functions.R"))
 source(file.path(functionfolder,"RSD_functions.R"))
 bmdfolder <- "BMD-data"
 bmds.df <- fread(file.path(bmdfolder,"BMDS_results.csv"))
-total.bmds.df <- fread(file.path(bmdfolder,"Supple Table 2 BMDS RSD results.csv"))
-ma.df <- fread(file.path(bmdfolder,"MA_RSD_results.csv"))
-hw.df <- fread(file.path(bmdfolder,"Supple Table 3 BBMD HW RSD results.csv"))
+resultsfolder <- "results"
+total.bmds.df <- fread(file.path(resultsfolder,"Supple Table 2 BMDS RSD results.csv"))
+ma.df <- fread(file.path(resultsfolder,"MA_RSD_results.csv"))
+hw.df <- fread(file.path(resultsfolder,"Supple Table 3 BBMD HW RSD results.csv"))
 figuresfolder <- "figures"
 
 errorbar.df <- data.frame(Index=1:255,MA.BMDL=ma.df[,"BMDL.10"],MA.BMD=ma.df[,"BMD.10"],MA.BMDU=ma.df[,"BMDU.10"],

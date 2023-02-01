@@ -1,4 +1,3 @@
-# Get_HDMI.R
 library(data.table)
 library(ggplot2)
 library(ggpubr)
@@ -10,11 +9,9 @@ source(file.path(functionfolder,"HDMI_functions.R"))
 source(file.path(functionfolder,"Extra_risk_functions.R"))
 source(file.path(functionfolder,"RSD_functions.R"))
 bmdfolder <- "BMD-data"
-total.data <- fread(file.path(bmdfolder,"Total_data_121821.csv"))
-output.bbmd <- fread(file.path(bmdfolder,"Summary_Output_data.csv")) 
-bmddata <- fread(file.path(bmdfolder,"BMD_data_121821.csv"))
-bmd.info <- fread(file.path(bmdfolder,"BMD_w_info_112921.csv"))
-bw.a.df <- fread(file.path(bmdfolder,"BW_data_final_121821.csv"))
+total.data <- fread(file.path(bmdfolder,"Sample_parameters.csv"))
+bmddata <- fread(file.path(bmdfolder,"BMD_data.csv"))
+bw.a.df <- fread(file.path(bmdfolder,"BW_data.csv"))
 resultsfolder <- "results"
 
 dosemax.df <- aggregate(Dose ~ Study_Index,max,data=bmddata)
@@ -29,7 +26,7 @@ I.vec <- c(10^seq(-6,-2,0.1),seq(0.02,0.99,0.01))
 bmr.vec <- 10^seq(-6,-1)
 
 allhdmi.df <- data.frame()
-for (i in 1:271){
+for (i in 1:nrow(bw.a.df)){ ############# Check nrow()=255
   cat(i,"...")
   datasetnum <- i
   samp.parms <- subset(total.data,Dataset==datasetnum)[,-1] # Remove first column which is dataset #
@@ -53,4 +50,7 @@ for (i in 1:271){
   }
 }
 
-write.csv(allhdmi.df,file.path(resultsfolder,"All HDMI - Index 1-271.csv"),row.names = FALSE)
+allhdmi.df <- allhdmi.df[,c("Index",1:9)]
+colnames(allhdmi.df) <- c("Index","M_indivrisk","I_Incidence","HDMI.p05","HDMI.p50","HDMI.p95",
+                          "HDMI.etasq.bmd","HDMI.etasq.sigmaH","HDMI.etasq.DAF","HDMI.etasq.AHU")
+fwrite(allhdmi.df,file.path(resultsfolder,"Supple Table 5 BBMD MA HDMI results.csv"))
