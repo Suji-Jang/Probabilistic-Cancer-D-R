@@ -6,6 +6,7 @@ library(ggpubr)
 library(lsr)
 library(data.table)
 
+# Load data and functions
 functionfolder <- "functions"
 source(file.path(functionfolder,"Pop_incidence_functions.R"))
 source(file.path(functionfolder,"BMD_functions.R"))
@@ -13,17 +14,17 @@ source(file.path(functionfolder,"HDMI_functions.R"))
 source(file.path(functionfolder,"Extra_risk_functions.R"))
 source(file.path(functionfolder,"RSD_functions.R"))
 bmdfolder <- "BMD-data"
-dose.max <- fread(file.path(bmdfolder,"BMD_data_092022.csv"))
-total.data <- fread(file.path(bmdfolder,"Total_data_092022.csv"))
-bw.a.df <- fread(file.path(bmdfolder,"BW_data_final_092022.csv"))
+dose.max <- fread(file.path(bmdfolder,"BMD_data.csv"))
+total.data <- fread(file.path(bmdfolder,"Sample_parameters.csv"))
+bw.a.df <- fread(file.path(bmdfolder,"BW_data.csv"))
 resultsfolder <- "results"
-prob.RSD6 <- fread(file.path(resultsfolder,"RSD06.quants.csv"))
-hdmi.df <- fread(file.path(resultsfolder,"HDMI_data_092922.csv"))
+prob.RSD6 <- fread(file.path(resultsfolder,"RSD06_quants.csv"))
+hdmi.df <- fread(file.path(resultsfolder,"Supple Table 5 BBMD MA HDMI results.csv"))
 figuresfolder <- "figures"
 
-hd.01.01.df <- subset(hdmi.df,(hdmi.df$indivrisk==0.01&hdmi.df$Incidence==0.01))
-hd.1e4.01.df <- subset(hdmi.df,(hdmi.df$indivrisk==1e-4&hdmi.df$Incidence==0.01))
-hd.1e6.01.df <- subset(hdmi.df,(hdmi.df$indivrisk==1e-6&hdmi.df$Incidence==0.01))
+hd.01.01.df <- subset(hdmi.df,(hdmi.df$M_indivrisk==0.01&hdmi.df$I_Incidence==0.01))
+hd.1e4.01.df <- subset(hdmi.df,(hdmi.df$M_indivrisk==1e-4&hdmi.df$I_Incidence==0.01))
+hd.1e6.01.df <- subset(hdmi.df,(hdmi.df$M_indivrisk==1e-6&hdmi.df$I_Incidence==0.01))
 
 dose.max <- aggregate(dose.max$Dose, by = list(dose.max$Study_Index), max)
 colnames(dose.max) <- c("Index","Dose.max")
@@ -33,7 +34,7 @@ bw.a.df <- bw.a.df[,c("Index","bw.a")]
 colnames(bw.a.df) <- c("Dataset","bw.a")
 bw.h <- 70
 
-### For M = 0.01
+# Population incidence from HDMI (For M = 0.01)
 hd.pop.inc.df <- data.frame()
 for (i in 1:length(dose.max)){
   datasetnum <- i
@@ -60,7 +61,7 @@ hd.pop.inc.df.plot$order.index <- 1:nrow(hd.pop.inc.df.plot)
 hd.pop.inc.df.plot <- hd.pop.inc.df.plot[,c("order.index","5%","50%","95%")]
 hd.pop.inc.df.plot$point.50 <- ifelse(hd.pop.inc.df.plot$`50%`<=2e-7,0,hd.pop.inc.df.plot$`50%`) # Run to convert small values to 0
 
-### For M = 1E-4
+# Population incidence from HDMI (For M = 1E-4)
 hd.pop.inc.1e4.df <- data.frame()
 for (i in 1:length(dose.max)){
   datasetnum <- i
@@ -87,7 +88,7 @@ hd.pop.inc.1e4.df.plot$order.index <- 1:nrow(hd.pop.inc.1e4.df.plot)
 hd.pop.inc.1e4.df.plot <- hd.pop.inc.1e4.df.plot[,c("order.index","5%","50%","95%")]
 hd.pop.inc.1e4.df.plot$point.50 <- ifelse(hd.pop.inc.1e4.df.plot$`50%`<=2e-7,0,hd.pop.inc.1e4.df.plot$`50%`) # Run to convert small values to 0
 
-### For M = 1E-6
+# Population incidence from HDMI (For M = 1E-6)
 hd.pop.inc.1e6.df <- data.frame()
 for (i in 1:length(dose.max)){
   datasetnum <- i
@@ -114,7 +115,7 @@ hd.pop.inc.1e6.df.plot$order.index <- 1:nrow(hd.pop.inc.1e6.df.plot)
 hd.pop.inc.1e6.df.plot <- hd.pop.inc.1e6.df.plot[,c("order.index","5%","50%","95%")]
 hd.pop.inc.1e6.df.plot$point.50 <- ifelse(hd.pop.inc.1e6.df.plot$`50%`<=2e-7,0,hd.pop.inc.1e6.df.plot$`50%`) # Run to convert small values to 0
 
-# Scatterplot for RSD and HDMI
+# Plot
 prob.RSD6 <- prob.RSD6[,c("Dataset","X5.")]
 colnames(prob.RSD6) <- c("Index","Prob.5")
 
@@ -127,6 +128,7 @@ prob.rfd.rsd$HDMI.01.RSD6 <- prob.rfd.rsd$HDMI.01/prob.rfd.rsd$RSD6
 prob.rfd.rsd$HDMI.1E4.RSD6 <- prob.rfd.rsd$HDMI.1E4/prob.rfd.rsd$RSD6
 prob.rfd.rsd$HDMI.1E6.RSD6 <- prob.rfd.rsd$HDMI.1E6/prob.rfd.rsd$RSD6
 
+# Figure 4A - Errorbar of population incidence at HD_0.01^0.01
 p1 <- ggplot(hd.pop.inc.df.plot) +
   geom_point(aes(x=order.index,y=point.50),color="#440154FF") +
   geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#440154FF",alpha=0.2)+
@@ -139,6 +141,7 @@ p1 <- ggplot(hd.pop.inc.df.plot) +
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.22, 0.95),
         plot.margin=margin(0.2,0.2,1.22,0.2,"cm"))
 
+# Figure 4D - Errorbar of population incidence at HD_1E-4^0.01
 p4 <- ggplot(hd.pop.inc.1e4.df.plot) +
   geom_point(aes(x=order.index,y=point.50),color="#365D8DFF") +
   geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#365D8DFF",alpha=0.2)+
@@ -151,6 +154,7 @@ p4 <- ggplot(hd.pop.inc.1e4.df.plot) +
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.22, 0.95),
         plot.margin=margin(0.2,0.2,1.22,0.2,"cm"))
 
+# Figure 4G - Errorbar of population incidence at HD_1E-6^0.01
 p7 <- ggplot(hd.pop.inc.1e6.df.plot) +
   geom_point(aes(x=order.index,y=point.50),color="#27AD81FF") +
   geom_linerange(mapping=aes(x=order.index,y=`50%`,ymin=`5%`, ymax = `95%`),color="#27AD81FF",alpha=0.2)+
@@ -163,6 +167,7 @@ p7 <- ggplot(hd.pop.inc.1e6.df.plot) +
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.22, 0.95),
         plot.margin=margin(0.2,0.2,1.22,0.2,"cm"))
 
+# Figure 4B - Scatterplot of HD_0.01^0.01 vs. 5th perc. Prob. RSD_6
 p2 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.01)) + geom_point(color="#440154FF") +
   geom_abline() + labs(tag="B") +
   scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
@@ -178,6 +183,7 @@ p2 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.01)) + geom_point(color="#440154FF")
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.24, 0.95),
         ggh4x.axis.ticks.length.minor = rel(1))
 
+# Figure 4E - Scatterplot of HD_1E-4^0.01 vs. 5th perc. Prob. RSD_6
 p5 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.1E4)) + geom_point(color="#365D8DFF") +
   geom_abline() + labs(tag="E") +
   scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
@@ -193,6 +199,7 @@ p5 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.1E4)) + geom_point(color="#365D8DFF"
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.24, 0.95),
         ggh4x.axis.ticks.length.minor = rel(1))
 
+# Figure 4H - Scatterplot of HD_1E-6^0.01 vs. 5th perc. Prob. RSD_6
 p8 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.1E6)) + geom_point(color="#27AD81FF") +
   geom_abline() + labs(tag="H") +
   scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("RSD6","HDMI.01","HDMI.1E4","HDMI.1E6")]),
@@ -208,6 +215,7 @@ p8 <- ggplot(prob.rfd.rsd,aes(x=RSD6,y=HDMI.1E6)) + geom_point(color="#27AD81FF"
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.24, 0.95),
         ggh4x.axis.ticks.length.minor = rel(1))
 
+# Figure 4C - Histogram of ratio HD_0.01^0.01 : 5th perc. Prob. RSD_6
 p3 <- ggplot(prob.rfd.rsd,aes(x=HDMI.01.RSD6)) + geom_histogram(fill="#440154FF") + labs(tag="C") +
   scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")]),
                          max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")])),
@@ -219,6 +227,7 @@ p3 <- ggplot(prob.rfd.rsd,aes(x=HDMI.01.RSD6)) + geom_histogram(fill="#440154FF"
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.07, 0.95),
         ggh4x.axis.ticks.length.minor = rel(1))
 
+# Figure 4F - Histogram of ratio HD_1E-4^0.01 : 5th perc. Prob. RSD_6
 p6 <- ggplot(prob.rfd.rsd,aes(x=HDMI.1E4.RSD6)) + geom_histogram(fill="#365D8DFF") + labs(tag="F") +
   scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")]),
                          max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")])),
@@ -230,7 +239,7 @@ p6 <- ggplot(prob.rfd.rsd,aes(x=HDMI.1E4.RSD6)) + geom_histogram(fill="#365D8DFF
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.07, 0.95),
         ggh4x.axis.ticks.length.minor = rel(1))
 
-
+# Figure 4I - Histogram of ratio HD_1E-6^0.01 : 5th perc. Prob. RSD_6
 p9 <- ggplot(prob.rfd.rsd,aes(x=HDMI.1E6.RSD6)) + geom_histogram(fill="#27AD81FF") + labs(tag="I") +
   scale_x_log10(limits=c(min(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")]),
                          max(prob.rfd.rsd[complete.cases(prob.rfd.rsd),][,c("HDMI.01.RSD6","HDMI.1E4.RSD6","HDMI.1E6.RSD6")])),
@@ -243,6 +252,4 @@ p9 <- ggplot(prob.rfd.rsd,aes(x=HDMI.1E6.RSD6)) + geom_histogram(fill="#27AD81FF
         ggh4x.axis.ticks.length.minor = rel(1))
 
 ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9) 
-ggsave(file.path(figuresfolder,"Figure 4 - HDMI_013023.pdf"),width=10,height=10)
-
-
+ggsave(file.path(figuresfolder,"Figure 4 - HDMI.pdf"),width=10,height=10)
