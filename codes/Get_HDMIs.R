@@ -26,7 +26,7 @@ I.vec <- c(10^seq(-6,-2,0.1),seq(0.02,0.99,0.01))
 bmr.vec <- 10^seq(-6,-1)
 
 allhdmi.df <- data.frame()
-for (i in 1:nrow(bw.a.df)){ ############# Check nrow()=255
+for (i in 1:nrow(bw.a.df)){
   cat(i,"...")
   datasetnum <- i
   samp.parms <- subset(total.data,Dataset==datasetnum)[,-1] # Remove first column which is dataset #

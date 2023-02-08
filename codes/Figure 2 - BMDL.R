@@ -30,7 +30,7 @@ errorbar.df$order.index <- 1:255
 errorbar.plot.df <- errorbar.df[order(errorbar.df$MA.BMD,errorbar.df$Index),]
 errorbar.plot.df$order.index <- 1:255
 errorbar.plot.df <- errorbar.plot.df[,c("order.index","MA.BMD","BMDS.BMDL")]
-colnames(errorbar.plot.df) <- c("order.index","BMD [MA]","BMDL [BMDS]")
+colnames(errorbar.plot.df) <- c("order.index","BMA BMD [BBMD]","BMDL [BMDS]")
 
 errorbar.plot.df <- melt(errorbar.plot.df,id.vars="order.index")
 
@@ -66,7 +66,7 @@ p2 <- ggplot(hist.df,aes(x=MA.BMDL,y=BMDS.BMDL)) + geom_point() +
   scale_y_log10(limits=c(min(errorbar.df[complete.cases(errorbar.df),][,c("HW.BMDL","BMDS.BMDL")])
                          ,max(errorbar.df[complete.cases(errorbar.df),][,c("HW.BMDL","BMDS.BMDL")])),
                 breaks=10^c(-6,-5,-4,-3,-2,-1,0,1,2,3),labels=trans_format("log10",math_format(10^.x))) +
-  xlab("BMDL [MA]") + ylab("BMDL [BMDS]") + theme_classic() +
+  xlab("BMDL [BBMD]") + ylab("BMDL [BMDS]") + theme_classic() +
   theme(panel.border = element_rect(colour = "black",fill=NA), 
         plot.tag = element_text(size=20, face="bold"),plot.tag.position = c(0.2, 0.95))
 
@@ -74,7 +74,7 @@ p2 <- ggplot(hist.df,aes(x=MA.BMDL,y=BMDS.BMDL)) + geom_point() +
 p3 <- ggplot(hist.df,aes(x=BMDS.MA)) + geom_histogram() + labs(tag="C") +
   scale_x_log10(limits=c(min(hist.df$BMDS.MA),max(hist.df$BMDS.MA)),breaks=10^c(-4,-3,-2,-1,0,1,2,3,4),   
                 labels=trans_format("log10",math_format(10^.x))) +
-  xlab("BMDL [BMDS] / BMDL [MA]") +
+  xlab("BMDL [BMDS] / BMDL [BBMD]") +
   theme_classic() + geom_vline(xintercept=1,linetype="dashed") +
   theme(axis.text.y=element_blank(),axis.ticks.y=element_blank(),axis.title.y=element_blank(),
         panel.border = element_rect(colour = "black",fill=NA), 
