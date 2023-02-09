@@ -29,7 +29,7 @@ errorbar.df$order.index <- 1:255
 errorbar.hw.plot.df <- errorbar.df[order(errorbar.df$MA.BMD,errorbar.df$Index),]
 errorbar.hw.plot.df$order.index <- 1:255
 errorbar.hw.plot.df <- errorbar.hw.plot.df[,c("order.index","MA.BMD","HW.BMDL")]
-colnames(errorbar.hw.plot.df) <- c("order.index","BMD [MA]","BMDL [HW]")
+colnames(errorbar.hw.plot.df) <- c("order.index","BMA BMD [BBMD]","BMDL [HW]")
 
 errorbar.hw.plot.df <- melt(errorbar.hw.plot.df,id.vars="order.index")
 
