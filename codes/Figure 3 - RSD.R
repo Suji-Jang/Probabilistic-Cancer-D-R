@@ -97,7 +97,7 @@ p4 <- ggplot(hist.RSD6.df,aes(x=MA.Prob)) + geom_histogram() + labs(tag="D") +
                          max(hist.RSD6.df[complete.cases(hist.RSD6.df),][,c("MA.Prob","BMDS.Prob")])),
                 breaks=10^c(-3:5),labels=trans_format("log10",math_format(10^.x))) + 
   xlab(expression(frac("RSD6 [BBMD-MA + Linear Extr.]","RSD6 [BBMD-MA + Prob. Extr. (5th Perc.)]"))) +
-  theme_classic() + geom_vline(xintercept=1,linetype="dashed") +
+  theme_classic() + geom_vline(xintercept=1,linetype="dashed") + annotation_logticks(sides="b") +
   theme(axis.text.y=element_blank(),axis.ticks.y=element_blank(),axis.title.y=element_blank(),
         panel.border = element_rect(colour = "black",fill=NA),
         axis.text.x=element_text(size=12),axis.title.x=element_text(size=13),
@@ -109,7 +109,7 @@ p5 <- ggplot(hist.RSD6.df,aes(x=BMDS.Prob)) + geom_histogram() + labs(tag="E") +
                          ,max(hist.RSD6.df[complete.cases(hist.RSD6.df),][,c("MA.Prob","BMDS.Prob")])),
                 breaks=10^c(-3:5),labels=trans_format("log10",math_format(10^.x))) +
   xlab(expression(frac("RSD6 [BMDS + Linear Extr.]","RSD6 [BBMD-MA + Prob. Extr. (5th Perc.)]"))) +
-  theme_classic() + geom_vline(xintercept=1,linetype="dashed") +
+  theme_classic() + geom_vline(xintercept=1,linetype="dashed") + annotation_logticks(sides="b") +
   theme(axis.text.y=element_blank(),axis.ticks.y=element_blank(),axis.title.y=element_blank(),
         panel.border = element_rect(colour = "black",fill=NA), 
         axis.text.x=element_text(size=12),axis.title.x=element_text(size=13),
@@ -118,4 +118,4 @@ p5 <- ggplot(hist.RSD6.df,aes(x=BMDS.Prob)) + geom_histogram() + labs(tag="E") +
 plot.2 <- ggarrange(p2,p3)
 plot.3 <- ggarrange(p4,p5)
 sum.plot <- ggarrange(p1,plot.2,plot.3,heights=c(6,4,4),widths=c(10,10),ncol=1)
-ggsave(file.path(figuresfolder,"Figure 3 - RSD_022523.pdf"),height=12,width=8)
+ggsave(file.path(figuresfolder,"Figure 3 - RSD.pdf"),height=12,width=8)

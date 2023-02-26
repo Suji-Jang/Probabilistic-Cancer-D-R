@@ -79,7 +79,7 @@ p3 <- ggplot(hist.df,aes(x=BMDS.MA)) + geom_histogram() + labs(tag="C") +
   scale_x_log10(limits=c(min(hist.df$BMDS.MA),max(hist.df$BMDS.MA)),breaks=10^c(-4,-3,-2,-1,0,1,2,3,4),   
                 labels=trans_format("log10",math_format(10^.x))) +
   xlab("BMDL [BMDS] / BMDL [BBMD]") +
-  theme_classic() + geom_vline(xintercept=1,linetype="dashed") +
+  theme_classic() + geom_vline(xintercept=1,linetype="dashed") + annotation_logticks(sides="b") +
   theme(axis.text.y=element_blank(),axis.ticks.y=element_blank(),axis.title.y=element_blank(),
         panel.border = element_rect(colour = "black",fill=NA),
         axis.text.x=element_text(size=12),axis.title.x=element_text(size=15),
@@ -87,4 +87,4 @@ p3 <- ggplot(hist.df,aes(x=BMDS.MA)) + geom_histogram() + labs(tag="C") +
 
 hist.scatter <- ggarrange(p2,p3,heights=c(5,5),widths=c(5,5)) # SIZE = 5 * 10
 sum.plot <- ggarrange(p1,hist.scatter,heights=c(6,4),widths=c(10,10),ncol=1)
-ggsave(file.path(figuresfolder,"Figure 2 - BMDL_022523.pdf"),height=10,width=8)
+ggsave(file.path(figuresfolder,"Figure 2 - BMDL.pdf"),height=10,width=8)
