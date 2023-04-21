@@ -46,8 +46,8 @@ for (i in 1:length(dose.max)){
                                                  bw.h = bw.h,
                                                  n.samp=2000)
   
-  Dose.conv <- hd.01.01.df[datasetnum,"X5."]/dose.max[datasetnum]
-  Dose.conv <- Dose.conv$X5.
+  Dose.conv <- hd.01.01.df[datasetnum,"HDMI.p05"]/dose.max[datasetnum]
+  Dose.conv <- Dose.conv$HDMI.p05
   pop.incidence.df <- get.pop.incidence(Dose.conv,
                                         uncertainty.samples,
                                         n.pop = 1e4,
@@ -73,8 +73,8 @@ for (i in 1:length(dose.max)){
                                                  bw.h = bw.h,
                                                  n.samp=2000)
   
-  Dose.conv <- hd.1e4.01.df[datasetnum,"X5."]/dose.max[datasetnum]
-  Dose.conv <- Dose.conv$X5.
+  Dose.conv <- hd.1e4.01.df[datasetnum,"HDMI.p05"]/dose.max[datasetnum]
+  Dose.conv <- Dose.conv$HDMI.p05
   pop.incidence.df <- get.pop.incidence(Dose.conv,
                                         uncertainty.samples,
                                         n.pop = 1e4,
@@ -100,8 +100,8 @@ for (i in 1:length(dose.max)){
                                                  bw.h = bw.h,
                                                  n.samp=2000)
   
-  Dose.conv <- hd.1e6.01.df[datasetnum,"X5."]/dose.max[datasetnum]
-  Dose.conv <- Dose.conv$X5.
+  Dose.conv <- hd.1e6.01.df[datasetnum,"HDMI.p05"]/dose.max[datasetnum]
+  Dose.conv <- Dose.conv$HDMI.p05
   pop.incidence.df <- get.pop.incidence(Dose.conv,
                                         uncertainty.samples,
                                         n.pop = 1e4,
