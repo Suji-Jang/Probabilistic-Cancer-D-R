@@ -13,8 +13,8 @@ library(cluster)
 bmdfolder <- "BMD-data"
 weight.df <- fread(file.path(bmdfolder,"Model_weight.csv"))
 bmds.df <- fread(file.path(bmdfolder,"BMDS_results.csv"))
-ma.df <- fread(file.path(bmdfolder,"MA_RSD_results.csv"))
 resultsfolder <- "results"
+ma.df <- fread(file.path(resultsfolder,"MA_RSD_results.csv"))
 rsd6.df <- fread(file.path(resultsfolder,"RSD06_quants.csv"))
 figuresfolder <- "figures"
 

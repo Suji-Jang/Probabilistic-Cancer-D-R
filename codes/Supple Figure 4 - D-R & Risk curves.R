@@ -1,50 +1,50 @@
-  library(viridis)
-  library(ggplot2)
-  library(stats)
-  library(ggpubr)
-  library(lsr)
-  library(scales)
-  library(data.table)
-  
-  # Load data and functions
-  functionfolder <- "functions"
-  source(file.path(functionfolder,"Pop_incidence_functions.R"))
-  source(file.path(functionfolder,"BMD_functions.R"))
-  source(file.path(functionfolder,"HDMI_functions.R"))
-  source(file.path(functionfolder,"Extra_risk_functions.R"))
-  source(file.path(functionfolder,"RSD_functions.R"))
-  bmdfolder <- "BMD-data"
-  total.data <- fread(file.path(bmdfolder,"Sample_parameters.csv"))
-  bw.a.df <- fread(file.path(bmdfolder,"BW_data.csv"))
-  bbmd.df <- fread(file.path(bmdfolder,"Summary_Output_data.csv"))
-  datasets_dich <- fread(file.path(bmdfolder,"BMD_data.csv"))
-  chemname.df <- fread(file.path(bmdfolder,"Supple Table 1 Cancer Dose Response Data.csv"))
-  resultsfolder <- "results"
-  hdmi.df <- fread(file.path(resultsfolder,"Supple Table 5 BBMD MA HDMI results.csv"))
-  rsd.06.df <- fread(file.path(resultsfolder,"RSD06_quants.csv"))
-  figuresfolder <- "figures"
-  
-  # Set Parameters
-  study.index <- unique(datasets_dich$Study_Index)
-  num.study <- length(study.index)
-  study.index.all <- datasets_dich$Study_Index
-  dose.all <- datasets_dich$Dose
-  subjnum.all <- datasets_dich$Number
-  casenum.all <- datasets_dich$Effect
-  zeroish <- 1e-8  # Globle Variable
-  
-  chem.name <- unique(chemname.df[,c("Index","Chemical.Name")])
-  
-  bw.a.df <- bw.a.df[,c("Index","bw.a")]
-  colnames(bw.a.df) <- c("Dataset","bw.a")
-  bw.h <- 70
-  
-  bbmd.bmdl <- bbmd.df[,c("V1","MA-ext10L")]
-  colnames(bbmd.bmdl) <- c("Index","BMDL")
-  bbmd.bmdl$DAF <- (bw.a.df$bw.a/70)^0.25
-  bbmd.bmdl$HED <- bbmd.bmdl$BMDL*bbmd.bmdl$DAF
-  
-  rsd.06.5th <- rsd.06.df$X5.
+library(viridis)
+library(ggplot2)
+library(stats)
+library(ggpubr)
+library(lsr)
+library(scales)
+library(data.table)
+
+# Load data and functions
+functionfolder <- "functions"
+source(file.path(functionfolder,"Pop_incidence_functions.R"))
+source(file.path(functionfolder,"BMD_functions.R"))
+source(file.path(functionfolder,"HDMI_functions.R"))
+source(file.path(functionfolder,"Extra_risk_functions.R"))
+source(file.path(functionfolder,"RSD_functions.R"))
+bmdfolder <- "BMD-data"
+total.data <- fread(file.path(bmdfolder,"Sample_parameters.csv"))
+bw.a.df <- fread(file.path(bmdfolder,"BW_data.csv"))
+bbmd.df <- fread(file.path(bmdfolder,"Summary_Output_data.csv"))
+datasets_dich <- fread(file.path(bmdfolder,"BMD_data.csv"))
+chemname.df <- fread(file.path(bmdfolder,"Supple Table 1 Cancer Dose Response Data.csv"))
+resultsfolder <- "results"
+hdmi.df <- fread(file.path(resultsfolder,"Supple Table 5 BBMD MA HDMI results.csv"))
+rsd.06.df <- fread(file.path(resultsfolder,"RSD06_quants.csv"))
+figuresfolder <- "figures"
+
+# Set Parameters
+study.index <- unique(datasets_dich$Study_Index)
+num.study <- length(study.index)
+study.index.all <- datasets_dich$Study_Index
+dose.all <- datasets_dich$Dose
+subjnum.all <- datasets_dich$Number
+casenum.all <- datasets_dich$Effect
+zeroish <- 1e-8  # Globle Variable
+
+chem.name <- unique(chemname.df[,c("Index","Chemical.Name")])
+
+bw.a.df <- bw.a.df[,c("Index","bw.a")]
+colnames(bw.a.df) <- c("Dataset","bw.a")
+bw.h <- 70
+
+bbmd.bmdl <- bbmd.df[,c("V1","MA-ext10L")]
+colnames(bbmd.bmdl) <- c("Index","BMDL")
+bbmd.bmdl$DAF <- (bw.a.df$bw.a/70)^0.25
+bbmd.bmdl$HED <- bbmd.bmdl$BMDL*bbmd.bmdl$DAF
+
+rsd.06.5th <- rsd.06.df$X5.
   
 # Plot
 for (s in 1:length(study.index)){

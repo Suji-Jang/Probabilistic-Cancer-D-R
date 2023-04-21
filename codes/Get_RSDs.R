@@ -9,11 +9,10 @@ source(file.path(functionfolder,"HDMI_functions.R"))
 source(file.path(functionfolder,"Extra_risk_functions.R"))
 source(file.path(functionfolder,"RSD_functions.R"))
 bmdfolder <- "BMD-data"
-total.data <- fread(file.path(bmdfolder,"Total_data_121821.csv"))
+total.data <- fread(file.path(bmdfolder,"Sample_parameters.csv"))
 output.bbmd <- fread(file.path(bmdfolder,"Summary_Output_data.csv")) 
-bmddata <- fread(file.path(bmdfolder,"BMD_data_121821.csv"))
-bmd.info <- fread(file.path(bmdfolder,"BMD_w_info_112921.csv"))
-bw.a.df <- fread(file.path(bmdfolder,"BW_data_final_121821.csv"))
+bmddata <- fread(file.path(bmdfolder,"BMD_data.csv"))
+bw.a.df <- fread(file.path(bmdfolder,"BW_data.csv"))
 resultsfolder <- "results"
 
 dosemax.df <- aggregate(Dose ~ Study_Index,max,data=bmddata)
@@ -64,6 +63,6 @@ for (k in 1:3) {
     RSD.df <- rbind(RSD.df,
                     cbind(data.frame(Dataset=datasetnum,as.data.frame(t(RSD.quants)))))
   }
-  fwrite(RSD.samps.df,file.path(resultsfolder,paste0(RSD.label,"samples.csv")))
-  fwrite(RSD.df,file.path(resultsfolder,paste0(RSD.label,".quants.csv")))
+  fwrite(RSD.samps.df,file.path(resultsfolder,paste0(RSD.label,"_samples.csv")))
+  fwrite(RSD.df,file.path(resultsfolder,paste0(RSD.label,"_quants.csv")))
 }
